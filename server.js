@@ -7,6 +7,19 @@ const jsonParser = bodyParser.json();
 
 app.use(express.static("public"));
 
+// Application routing
+app.get("/", (_, res) => {
+    res.sendFile(__dirname + "/public/index.html");
+});
+
+app.get("/about", (_, res) => {
+    res.sendFile(__dirname + "/public/about.html");
+});
+
+app.get("/login", (_, res) => {
+    res.sendFile(__dirname + "/public/login.html");
+});
+
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
     new Promise((resolve, reject) => {
