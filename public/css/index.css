@@ -1,3 +1,9 @@
+/* #1b4079, #4d7c8a, #7f9c96, #8fad88, #cbdf90 */
+
+body {
+    background-color: #4d7c8a !important;
+}
+
 nav {
     background-color: #1b4079;
 }
@@ -18,12 +24,24 @@ nav a {
     opacity: 1;
 }
 
-/* .active:hover {
-    opacity: 1;
-} */
+.about-us-title {
+    margin: auto;
+    margin-top: 26px;
+}
 
+.about-us-name {
+    margin-top: 30px;
+}
 
-/* .active {
-    opacity: 1;
-} */
+.about-us-image {
+    margin-top: 10px;
+    border-radius: 100%;
+}
 
+.about-us-desc {
+    margin: 20px 0;
+}
+
+.about-us-link, .about-us-link:hover {
+    color: #1b4079;
+}
