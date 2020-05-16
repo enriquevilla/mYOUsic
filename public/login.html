@@ -10,14 +10,30 @@
     <title>Log in</title>
 </head>
 
-<body id ="login-body">
+<body id="login-body">
     <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="/">
-            Log in
+            Website name
         </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
     </nav>
-
+    <h2 class="text-center login-title">
+        Log in
+    </h2>
+    <form class="login-form">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Username" aria-label="Username">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Password" aria-label="Password">
+        </div>
+        <button class="btn btn-info" type="submit">
+            Submit
+        </button>
+    </form>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
