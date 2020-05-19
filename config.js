@@ -1,4 +1,4 @@
-const DBURL = process.env.DBURL || "mongodb://localhost/inventorydb";
+const DBURL = process.env.DBURL || "mongodb://localhost/musicAppdb";
 const PORT = process.env.PORT || "8080";
-
-module.exports = {DBURL, PORT};
+const SECRET_TOKEN = process.env.PORT || "secret";
+module.exports = {DBURL, PORT, SECRET_TOKEN};
