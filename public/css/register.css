@@ -1,0 +1,93 @@
+body{
+    /* Safari 4-5, Chrome 1-9 */
+      background: -webkit-gradient(radial, center center, 0, center center, 460, from(#32292f), to(#0a0908));
+  
+    /* Safari 5.1+, Chrome 10+ */
+      background: -webkit-radial-gradient(circle, #32292f, #0a0908);
+  
+    /* Firefox 3.6+ */
+      background: -moz-radial-gradient(circle, #32292f, #0a0908);
+  
+    /* IE 10 */
+      background: -ms-radial-gradient(circle, #32292f, #0a0908);
+      height:600px;
+  }
+  
+  .centered-form{
+      margin-top: 60px;
+  }
+  
+  .centered-form .panel{
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
+  }
+  
+  label.label-floatlabel {
+      font-weight: bold;
+      color: #46b8da;
+      font-size: 11px;
+  }
+
+  .panel-default{
+      padding:40px;
+  }
+  nav {
+    background-color: #56e39f;
+}
+
+nav a {
+    color: #0a0908 !important;
+}
+
+.navbar-toggler {
+    border: none !important;
+}
+
+.nav-item:hover {
+    opacity: 0.7;
+}
+
+.nav-item {
+    opacity: 0.5;
+}
+
+#index-body .index-active, #about-body .about-active, #login-body .login-active{
+    opacity: 1;
+}
+
+.about-us-title {
+    margin: auto;
+    margin-top: 26px;
+}
+
+.about-us-name {
+    margin-top: 30px;
+}
+
+.about-us-image {
+    margin-top: 10px;
+    border-radius: 100%;
+}
+
+.about-us-desc {
+    margin: 20px 0;
+}
+
+.about-us-link, .about-us-link:hover {
+    color: #1b4079;
+}
+
+.login-title {
+    margin: 50px 0;
+}
+
+.login-form {
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-form > button {
+    margin-top: 20px;
+    width: 100%;
+}
