@@ -23,6 +23,10 @@ app.get("/login", (_, res) => {
     res.sendFile(__dirname + "/public/login.html");
 });
 
+app.get("/register", (_, res) => {
+    res.sendFile(__dirname + "/public/register.html");
+});
+
 app.get("/validate-token",(req,res)=>{
     let token = req.headers.sessiontoken;
     jsonwebtoken.verify(token,SECRET_TOKEN,(err,decoded)=>{
