@@ -11,6 +11,7 @@
 </head>
 
 <body id="index-body">
+    <script src="./js/validatetoken.js"></script>
     <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="/">
             Website name
@@ -19,7 +20,26 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item index-active">
+                    <a class="nav-link" href="/">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item about-active">
+                    <a class="nav-link " href="/about">
+                        About us
+                    </a>
+                </li>
+                <li class="nav-item login-active">
+                    <a class="nav-link " href="/login">
+                        Log in
+                    </a>
+                </li>
+                <script src="./js/adjustNav.js"></script>
+            </ul>
+        </div>
     </nav>
     <!-- <iframe src="https://open.spotify.com/embed/track/6l8GvAyoUZwWDgF1e4822w" width="300" height="80" frameborder="0"
         allowtransparency="true" allow="encrypted-media"></iframe> -->

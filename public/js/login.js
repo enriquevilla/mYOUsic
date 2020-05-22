@@ -1,7 +1,3 @@
-$(function(){
-    $("#navbarSupportedContent").load("nav.html");
-});
-
 function userLoginFetch( userName, password ){
     let url = '/login';
 
@@ -30,7 +26,7 @@ function userLoginFetch( userName, password ){
         .then( responseJSON => {
             console.log( responseJSON );
             localStorage.setItem('token',responseJSON.token);
-            window.location.href="/index.html";
+            window.location.href="/";
         })
         .catch( err => {
             results.innerHTML = `<div> ${err.message} </div>`;

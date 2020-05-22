@@ -19,7 +19,25 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item index-active">
+					<a class="nav-link" href="/">
+						Home
+					</a>
+				</li>
+				<li class="nav-item about-active">
+					<a class="nav-link " href="/about">
+						About us
+					</a>
+				</li>
+				<li class="nav-item login-active">
+					<a class="nav-link " href="/login">
+						Log in
+					</a>
+				</li>
+			</ul>
+		</div>
     </nav>
 <div class="container">
         <div class="row centered-form justify-content-md-center">
@@ -29,22 +47,18 @@
 			    		<h3 class="panel-title">Register</h3>
 			 			</div>
 			 			<div class="panel-body">
-			    		<form role="form">
+			    		<form role="form" class = "register-form">
 			    			<div class="row">
 			    				<div class="col-xs-12 col-sm-12 col-md-12">
 			    					<div class="form-group">
-			                <input type="text" name="user_name" id="user_name" class="form-control input-sm floatlabel" placeholder="User Name">
+			                <input type="text" name="user_name" id="userName" class="form-control input-sm floatlabel" placeholder="User Name">
 			    					</div>
 			    				</div>
-		
 			    			</div>
-
-			    		
-
 			    			<div class="row">
 			    				<div class="col-xs-6 col-sm-6 col-md-6">
 			    					<div class="form-group">
-			    						<input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password">
+			    						<input type="password" name="password" class="form-control input-sm" placeholder="Password" id="userPassword">
 			    					</div>
 			    				</div>
 			    				<div class="col-xs-6 col-sm-6 col-md-6">
@@ -61,7 +75,9 @@
 	    		</div>
     		</div>
     	</div>
-    </div>
+	</div>
+	<section class ="results">
+	</section>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -73,6 +89,6 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
 </body>
-
 <script src="./js/register.js"></script>
+
 </html>
