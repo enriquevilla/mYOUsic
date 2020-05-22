@@ -1,16 +1,4 @@
-const mongoose = require( 'mongoose' );
-
-const songSchema = mongoose.Schema({
-    name : {
-        type : String,
-        required : true
-    },
-    href: {
-        type : String,
-        required: true
-    }
-
-});
+const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
     userName : {
@@ -21,31 +9,48 @@ const userSchema = mongoose.Schema({
         type : String,
         required: true
     },
-    favSongs:[songSchema]
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users"
+    }],
+    favorites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "posts"
+    }]
 });
 
-const userModel = mongoose.model( 'user', userSchema );
+const userModel = mongoose.model("users", userSchema);
 
 const Users = {
     createUser : function( newUser ){
         return userModel
-                .create( newUser )
-                .then( user => {
-                    return user;
-                })
-                .catch( err => {
-                    throw new Error( err.message );
-                }); 
+            .find({userName: newUser.userName})
+            .then(r => {
+                if (r.length > 0) {
+                    throw new Error("Username already taken.");
+                } else {
+                    return userModel.create( newUser )
+                        .then( user => {
+                            return user;
+                        })
+                        .catch(err => {
+                            throw new Error(err.message)
+                        })
+                }
+            })
+            .catch( err => {
+                throw new Error( err.message );
+            }); 
     },
     getUserByUserName: function( userName ){
         return userModel
-                .findOne( { userName } )
-                .then( user => {
-                    return user;
-                })
-                .catch( err => {
-                    throw new Error( err.message );
-                }); 
+            .findOne( { userName } )
+            .then( user => {
+                return user;
+            })
+            .catch( err => {
+                throw new Error( err.message );
+            }); 
     }
 }
 

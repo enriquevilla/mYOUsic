@@ -18,7 +18,25 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item index-active">
+                    <a class="nav-link" href="/">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item about-active">
+                    <a class="nav-link " href="/about">
+                        About us
+                    </a>
+                </li>
+                <li class="nav-item login-active">
+                    <a class="nav-link " href="/login">
+                        Log in
+                    </a>
+                </li>
+            </ul>
+        </div>
     </nav>
     <h2 class="text-center login-title">
         Log in
@@ -28,11 +46,16 @@
             <input type="text" class="form-control" placeholder="Username" aria-label="Username" id="userName">
         </div>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Password" aria-label="Password" id="userPassword">
+            <input type="password" class="form-control" placeholder="Password" aria-label="Password" id="userPassword">
         </div>
         <button class="btn btn-info" type="submit">
             Submit
         </button>
+        <p class="text-center mt-2">
+            <a href="/register">
+                Don't have an account? Register now
+            </a>
+        </p>
     </form>
     <section class="results">
         

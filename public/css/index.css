@@ -1,15 +1,29 @@
 /* #1b4079, #4d7c8a, #7f9c96, #8fad88, #cbdf90 */
+body{
+    /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(radial, center center, 0, center center, 460, from(#32292f), to(#0a0908));
 
-body {
-    background-color: #4d7c8a !important;
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-radial-gradient(circle, #32292f, #0a0908);
+
+    /* Firefox 3.6+ */
+    background: -moz-radial-gradient(circle, #32292f, #0a0908);
+
+    /* IE 10 */
+    background: -ms-radial-gradient(circle, #32292f, #0a0908);
+    height:600px;
+}
+
+h2 {
+    color: white;
 }
 
 nav {
-    background-color: #99E1D9;
+    background-color: #56e39f;
 }
 
 nav a {
-    color: white !important;
+    color: #0a0908 !important;
 }
 
 .navbar-toggler {
@@ -63,4 +77,10 @@ nav a {
 .login-form > button {
     margin-top: 20px;
     width: 100%;
+}
+
+.results {
+    text-align: center;
+    margin-top: 30px;
+    color: red;
 }

@@ -91,3 +91,9 @@ nav a {
     margin-top: 20px;
     width: 100%;
 }
+
+.results {
+    margin-top: 30px;
+    color: red;
+    text-align: center;
+}
