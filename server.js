@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const app = express();
 const { Users } = require('./models/user-model');
+// const { Posts } = require('./models/post-model');
+
 const jsonParser = bodyParser.json();
 
 app.use(express.static("public"));
@@ -111,6 +113,36 @@ app.post('/register', jsonParser, (req, res) => {
             return res.status(400).end();
         });
 });
+
+
+// app.post('/posts', jsonParser, (req, res) => {
+//     const {description,songId} = req.body;
+  
+//     if (!songId || !description) {
+//         res.statusMessage = "Field or fields missing in request body";
+//         return res.status(406).end();
+//     }
+    
+  
+//     const newPost = {
+//         description: description,
+//         songId : songId
+//     }
+  
+//     Posts
+//         .createPost(newPost)
+//         .then(d => {
+//           console.log("New Post", newPost);
+//           return res.status(201).json(d);
+//         })
+//         .catch(_ => {
+//             res.statusMessage = "Something went wrong";
+//             return res.status(500).end();
+//         });
+//   });
+
+
+
 
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
