@@ -51,6 +51,19 @@ const Users = {
             .catch( err => {
                 throw new Error( err.message );
             }); 
+    },
+    createFavorite: function(userId, postId){
+        console.log("user:" + userId)
+        console.log("post:" + postId)
+        return userModel
+            .updateOne({_id: userId}, {$push: {"favorites": postId}})
+            .then(_ => {
+                console.log(postId);
+                return _
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            });
     }
 }
 

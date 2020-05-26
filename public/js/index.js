@@ -46,9 +46,47 @@ function getAllPosts() {
                     <form id="${post._id}">
                         <input type="text" class="form-control post-comment-input" placeholder="Comment" 
                             aria-label="Comment" id="commentinput${post._id}">
+                        <button type="button" class="btn btn-primary favButton">Add to Favorites</button>
                     </form>
+                    
                 `;
             }
+            document.querySelectorAll(".favButton").forEach(i =>{
+                i.addEventListener("click",(e) => {
+                    e.preventDefault();
+                    const postId = e.target.parentElement.id;
+                    const username = localStorage.getItem("userName");
+                    console.log(postId);
+                    console.log(username);
+                    const data = {
+                        username : username,
+                        postId : postId
+                    }
+                    const settings = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    };
+
+
+
+                    fetch("/addFavorite", settings)
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error(response.statusText);
+                            }
+                        })
+                        .then(responseJson=>{
+                            console.log(responseJson);
+                            
+                        })
+         
+                })
+            });
             document.querySelectorAll("form").forEach(i => {
                 i.addEventListener("submit", (e) => {
                     e.preventDefault();

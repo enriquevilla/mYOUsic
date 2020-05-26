@@ -226,6 +226,37 @@ app.post("/addComment", jsonParser, (req, res) => {
 
 });
 
+
+
+app.post("/addFavorite", jsonParser, (req, res) => {
+    const {postId, username} = req.body;
+    console.log("Hello" + postId);
+    console.log("Hello" + username);
+
+
+    if (!postId || !username) {
+        res.statusMessage = "Field or fields missing in request body";
+        return res.status(406).end();
+    }
+
+    Users
+        .getUserByUserName(username)
+        .then(userJson=>{
+            Users
+                .createFavorite(userJson._id, postId)
+                .then(favJSON => {
+                    return res.status(200).json(favJSON);
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong when creating Fav";
+                    return res.status(500).end();
+                });
+            })
+       
+});
+
+
+
 app.get("/posts/:username", (req, res) => {
     const {username} = req.params;
 
