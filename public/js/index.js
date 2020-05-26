@@ -13,7 +13,7 @@ function getAllPosts() {
             console.log(posts);
             for (let post of posts) {
                 document.querySelector(".results").innerHTML += `
-                    <div class="post-result">
+                    <div class="post-result" id="${post._id}">
                         <h3 class="post-title">
                             ${post.description}
                         </h3>
@@ -23,8 +23,31 @@ function getAllPosts() {
                         <p class="post-user">
                             Post by: ${post.user.userName}
                         </p>
+                        <div class="comments${post._id}">
+
+                        </div>
                     </div>
-                `
+                `;
+                if (post.comments.length > 0) {
+                    // document.querySelector(`.comments${post._id}`).innerHTML += `
+                    //     <p>
+                    //         Comments:
+                    //     </p>
+                    // `;
+                    for (let comment of post.comments) {
+                        document.querySelector(`.comments${post._id}`).innerHTML += `
+                            <p>
+                                ${comment}
+                            </p>
+                        `
+                    }
+                }
+                document.querySelector(`.comments${post._id}`).innerHTML += `
+                    <form>
+                        <input type="text" class="form-control post-comment-input" placeholder="Comment" 
+                            aria-label="Comment" id="comment${post._id}">
+                    </form>
+                `;
             }
         })
         .catch(err => {

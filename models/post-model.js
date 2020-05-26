@@ -56,6 +56,23 @@ const Posts = {
             }
         }
         return allResults;
+    },
+    updatePostComments: function(postID, commentID) {
+        postModel
+            .updateOne({_id: postID}, {$push: {"comments": commentID}})
+            .then(_ => {
+                return postModel
+                    .find({_id: postID})
+                    .then(updatedPost => {
+                        return updatedPost;
+                    })
+                    .catch(err => {
+                        throw new Error(err.message);
+                    });
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
     }
 }
 
