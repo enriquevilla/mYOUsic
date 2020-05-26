@@ -107,6 +107,7 @@ nav a {
     padding: 0 16px;
     padding-top: 14px;
     width: fit-content;
+    width: -moz-fit-content;
     border: 1px #56e39f solid;
 }
 

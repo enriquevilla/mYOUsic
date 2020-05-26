@@ -79,6 +79,17 @@ const Posts = {
             .catch(err => {
                 throw new Error(err.message);
             });
+    },
+    getPostsByUser: function(userId){
+        return postModel
+            .find({user: userId})
+            .then(users =>{
+                console.log(users);
+                return users;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            });
     }
 }
 
