@@ -43,7 +43,7 @@ const Posts = {
                 throw new Error(err.message);
             })
     },
-    getPostsByFollowing: function(following) {
+    getPostsByFollowing: async function(following) {
         // following = object ids
         let allResults = [];
         for (let ObjectId of following) {

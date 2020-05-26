@@ -1,8 +1,11 @@
-
-const API_TOKEN = 'BQCtzDqk2eAsKlK0agIKjGUlufKPSG3w2M2JzGoIp3j_Shp-LLiIIJiR7SthQlxydNUhDa9pTIMU4M_5ges';
-
 function fetchSong(title){
-
+    const API_TOKEN = fetch("/genAccessToken")
+        .then(response => {
+            return response.json();
+        })
+        .then(tokenJSON => {
+            console.log(tokenJSON.access_token);
+        })
     let url = `https://api.spotify.com/v1/search?q=${title}&type=track&limit=10`;
     let settings = {
         method : 'GET',
@@ -16,6 +19,9 @@ function fetchSong(title){
         .then( response => {
             if( response.ok ){
                 return response.json();
+            }
+            if (response.status === 401) {
+                throw new Error("Spotify API token expired.");
             }
             throw new Error( response.statusText );
         })

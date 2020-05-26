@@ -17,7 +17,7 @@ const commentSchema = mongoose.Schema({
 
 const commentModel = mongoose.model('comments', commentSchema);
 
-const Comment = {
+const Comments = {
     createComment : function( newComment ){
         return commentModel
             .create( newComment )
@@ -28,7 +28,7 @@ const Comment = {
                 throw new Error( err.message );
             }); 
     },
-    getCommentsOfPost: function(comments){
+    getCommentsOfPost: async function(comments){
         //comments = object ids
         let allResults = [];
         for (let ObjectId of comments) {
@@ -44,5 +44,5 @@ const Comment = {
 }
 
 module.exports = {
-    Comment
+    Comments
 };
