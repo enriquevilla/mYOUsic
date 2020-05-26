@@ -86,7 +86,7 @@ nav a {
 }
 
 .post-button {
-    position: absolute;
+    position: fixed;
     right: 20px;
     bottom: 20px;
     background-color: #56e39f !important;

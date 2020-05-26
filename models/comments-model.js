@@ -18,14 +18,14 @@ const commentSchema = mongoose.Schema({
 const commentModel = mongoose.model('comments', commentSchema);
 
 const Comments = {
-    createComment : function( newComment ){
+    createComment : function(newComment) {
         return commentModel
-            .create( newComment )
-            .then( comment => {
+            .create(newComment)
+            .then(comment => {
                 return comment;
             })
             .catch( err => {
-                throw new Error( err.message );
+                throw new Error(err.message);
             }); 
     },
     getCommentsOfPost: async function(comments){

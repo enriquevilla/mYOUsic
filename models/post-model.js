@@ -25,13 +25,13 @@ const postModel = mongoose.model("posts", postSchema);
 const Posts = {
     createPost : function(newPost){
         return postModel
-        .create(newPost)
-        .then( post => {
-            return post;
-        })
-        .catch( err => {
-            throw new Error(err.message);
-        }); 
+            .create(newPost)
+            .then( post => {
+                return post;
+            })
+            .catch( err => {
+                throw new Error(err.message);
+            }); 
     },
     getAllPosts: function() {
         return postModel
@@ -58,21 +58,26 @@ const Posts = {
         return allResults;
     },
     updatePostComments: function(postID, commentID) {
-        postModel
+        return postModel
             .updateOne({_id: postID}, {$push: {"comments": commentID}})
             .then(_ => {
-                return postModel
-                    .find({_id: postID})
-                    .then(updatedPost => {
-                        return updatedPost;
-                    })
-                    .catch(err => {
-                        throw new Error(err.message);
-                    });
+                console.log(postID);
+                return this.getPostById(postID)
             })
             .catch(err => {
                 throw new Error(err.message);
             })
+    },
+    getPostById: function(postID) {
+        return postModel
+            .findOne({_id: postID})
+            .then(post => {
+                console.log(post);
+                return post;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            });
     }
 }
 

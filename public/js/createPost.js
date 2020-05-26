@@ -137,8 +137,7 @@ function addpostFech( songId, description){
     let settings = {
         method : 'POST',
         headers : {
-            Authorization : `Bearer BQA8sd__b56x1llRaxYdgW51jj-nzfu_QmFhMyxjv2zgEaj1aLDSK7BC_CG6vXnFPNt-u0pPNuREplzBbZM`,
-            'Content-Type' : 'application/json'
+            'Content-Type': 'application/json'
         },
         body : JSON.stringify( data )
     }
