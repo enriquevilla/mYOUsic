@@ -1,95 +1,90 @@
 function fetchSong(title){
-    const API_TOKEN = fetch("/genAccessToken")
+    fetch("/genAccessToken")
         .then(response => {
             return response.json();
         })
         .then(tokenJSON => {
-            console.log(tokenJSON.access_token);
-        })
-    let url = `https://api.spotify.com/v1/search?q=${title}&type=track&limit=10`;
-    let settings = {
-        method : 'GET',
-        headers : {
-            Authorization : `Bearer ${API_TOKEN}`
-        }
-    }
-    let results = document.querySelector( '.results' );
-
-    fetch( url, settings )
-        .then( response => {
-            if( response.ok ){
-                return response.json();
+            const API_TOKEN = tokenJSON.access_token;
+            let url = `https://api.spotify.com/v1/search?q=${title}&type=track&limit=10`;
+            let settings = {
+                method : 'GET',
+                headers : {
+                    Authorization : `Bearer ${API_TOKEN}`
+                }
             }
-            if (response.status === 401) {
-                throw new Error("Spotify API token expired.");
-            }
-            throw new Error( response.statusText );
-        })
-        .then( responseJson => {
-            window.value=responseJson;  
-            results.innerHTML = "";
-            document.querySelector(".results").innerHTML = "";
-            // responseJson.tracks.items.forEach(element => {
-            //     document.querySelector(".results").innerHTML += `
-            //         <div>
-            //             <p>
-            //                 Title: ${element.name}
-            //             </p>
-            //             <hr>
-            //         </div>
-            //     `;
-            // });
+            let results = document.querySelector('.results');
+            fetch( url, settings )
+                .then( response => {
+                    if( response.ok ){
+                        return response.json();
+                    }
+                    if (response.status === 401) {
+                        throw new Error("Spotify API token expired.");
+                    }
+                    throw new Error( response.statusText );
+                })
+                .then( responseJson => {
+                    window.value=responseJson;  
+                    results.innerHTML = "";
+                    document.querySelector(".results").innerHTML = "";
+                    // responseJson.tracks.items.forEach(element => {
+                    //     document.querySelector(".results").innerHTML += `
+                    //         <div>
+                    //             <p>
+                    //                 Title: ${element.name}
+                    //             </p>
+                    //             <hr>
+                    //         </div>
+                    //     `;
+                    // });
 
 
-            // const songMenu=document.createElement("form");
-            // songMenu.classList.add("songForm");
-            const formGroup = document.createElement("div");
-            formGroup.classList.add("form-group");
-            formGroup.classList.add("songForm");
-            const labelForm = document.createElement("label");
-            labelForm.setAttribute("for","controlSelect");
-            labelForm.innerHTML="Choose the song you are looking for";
-            formGroup.appendChild(labelForm);
-            const selectGroup = document.createElement("select");
-            selectGroup.classList.add("form-control");
-            selectGroup.id="controlSelect";
-            formGroup.appendChild(selectGroup);
+                    // const songMenu=document.createElement("form");
+                    // songMenu.classList.add("songForm");
+                    const formGroup = document.createElement("div");
+                    formGroup.classList.add("form-group");
+                    formGroup.classList.add("songForm");
+                    const labelForm = document.createElement("label");
+                    labelForm.setAttribute("for","controlSelect");
+                    labelForm.innerHTML="Choose the song you are looking for";
+                    formGroup.appendChild(labelForm);
+                    const selectGroup = document.createElement("select");
+                    selectGroup.classList.add("form-control");
+                    selectGroup.id="controlSelect";
+                    formGroup.appendChild(selectGroup);
 
-            responseJson.tracks.items.forEach(element => {
-                const optionGroup = document.createElement("option");
-                optionGroup.innerHTML=element.name +"          |            " +element.artists[0].name;
-                selectGroup.appendChild(optionGroup);
-            });
+                    responseJson.tracks.items.forEach(element => {
+                        const optionGroup = document.createElement("option");
+                        optionGroup.innerHTML=element.name +"          |            " +element.artists[0].name;
+                        selectGroup.appendChild(optionGroup);
+                    });
 
-            const subButton = document.createElement("button");
-            subButton.setAttribute("type","button");
-            subButton.classList.add("btn");
-            subButton.classList.add("btn-primary");
-            subButton.innerHTML="This is the song";
-            // songMenu.appendChild(formGroup);
-            subButton.setAttribute("onclick","searchSong(window.value)");
-            formGroup.appendChild(subButton);
-            document.querySelector(".results").appendChild(formGroup);
-            let SongForm = document.querySelector( '.songForm' );
-            let selectedIndex = document.getElementById("controlSelect").selectedIndex;
-
-            
-
-
-            // SongForm.addEventListener( 'submit' , ( event ) => {
-            //     event.preventDefault();
-            //     var songId = responseJson.tracks.items[selectedIndex].uri;
-            //     var newsongId = songId.replace('spotify:track:','');
-            //     console.log(newsongId);
-            //     results.innerHTML+= `
-            //     <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
-            // allowtransparency="true" allow="encrypted-media"></iframe>
-            //     `;
-                
-            // });
-
-
-
+                    const subButton = document.createElement("button");
+                    subButton.setAttribute("type","button");
+                    subButton.classList.add("btn");
+                    subButton.classList.add("btn-primary");
+                    subButton.innerHTML="This is the song";
+                    // songMenu.appendChild(formGroup);
+                    subButton.setAttribute("onclick","searchSong(window.value)");
+                    formGroup.appendChild(subButton);
+                    document.querySelector(".results").appendChild(formGroup);
+                    let SongForm = document.querySelector( '.songForm' );
+                    let selectedIndex = document.getElementById("controlSelect").selectedIndex;
+                    // SongForm.addEventListener( 'submit' , ( event ) => {
+                    //     event.preventDefault();
+                    //     var songId = responseJson.tracks.items[selectedIndex].uri;
+                    //     var newsongId = songId.replace('spotify:track:','');
+                    //     console.log(newsongId);
+                    //     results.innerHTML+= `
+                    //     <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
+                    // allowtransparency="true" allow="encrypted-media"></iframe>
+                    //     `;
+                        
+                    // });
+                    })
+                    .catch(err => {
+                        throw new Error(err.message);
+                    })
         })
         .catch( err => {
             results.innerHTML = `<div> ${err.message} </div>`;
