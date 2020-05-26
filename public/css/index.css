@@ -84,3 +84,36 @@ nav a {
     margin-top: 30px;
     color: red;
 }
+
+.post-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background-color: #56e39f !important;
+    font-size: 30px !important;
+    font-weight: bolder !important;
+    width: 47px;
+    height: 47px;
+}
+
+.post-button > p {
+    position: absolute;
+    left: 12px;
+    top: -2px;
+}
+
+.post-result {
+    margin: 30px auto;
+    padding: 0 16px;
+    padding-top: 14px;
+    width: fit-content;
+    border: 1px #56e39f solid;
+}
+
+.post-title {
+    color: white;
+}
+
+.post-user {
+    color: white;
+}
