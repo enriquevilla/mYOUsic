@@ -14,6 +14,7 @@ fetch( url, settings )
         throw new Error( response.statusText );
     })
     .then( responseJSON => {
+        localStorage.setItem("userName",`${responseJSON.userName}`);
         console.log( responseJSON );
     })
     .catch( err => {

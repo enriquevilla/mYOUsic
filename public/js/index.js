@@ -5,6 +5,7 @@ function fetchSong(title){
         })
         .then(tokenJSON => {
             const API_TOKEN = tokenJSON.access_token;
+            console.log(API_TOKEN);
             let url = `https://api.spotify.com/v1/search?q=${title}&type=track&limit=10`;
             let settings = {
                 method : 'GET',
@@ -104,6 +105,9 @@ function searchSong(responseJson){
     <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
 allowtransparency="true" allow="encrypted-media"></iframe>
     `;
+    let description = document.getElementById( 'Description' ).value;
+    addpostFech(newsongId,description);
+
     
 }
 
@@ -125,37 +129,39 @@ function watchPostForm(){
 
 
 
-// function addpostFech( songId, description){
-//     let data = {
-//         songId : songId,
-//         description: description,
-//     }
+function addpostFech( songId, description){
 
-//     let settings = {
-//         method : 'POST',
-//         headers : {
-//             Authorization : `Bearer ${API_TOKEN}`,
-//             'Content-Type' : 'application/json'
-//         },
-//         body : JSON.stringify( data )
-//     }
+    let data = {
+        song : songId,
+        description: description,
+        user : localStorage.getItem("userName")
+    }
 
-//     let results = document.querySelector( '.results' );
-//     results.innerHTML = "";
-//     fetch( `/posts`, settings )
-//         .then( response => {
-//             if( response.ok ){
-//                 return response.json();
-//             }
-//             throw new Error( response.statusText );
-//         })
-//         .then( responseJSON => {
-//             console.log(responseJSON);
-//         })
-//         .catch( err => {
-//             results.innerHTML = `<div> ${err.message} </div>`;
-//         });
-// }
+    let settings = {
+        method : 'POST',
+        headers : {
+            Authorization : `Bearer BQA8sd__b56x1llRaxYdgW51jj-nzfu_QmFhMyxjv2zgEaj1aLDSK7BC_CG6vXnFPNt-u0pPNuREplzBbZM`,
+            'Content-Type' : 'application/json'
+        },
+        body : JSON.stringify( data )
+    }
+
+    let results = document.querySelector( '.results' );
+    results.innerHTML = "";
+    fetch( "/posts", settings )
+        .then( response => {
+            if( response.ok ){
+                return response.json();
+            }
+            throw new Error( response.statusText );
+        })
+        .then( responseJSON => {
+            console.log(responseJSON);
+        })
+        .catch( err => {
+            results.innerHTML = `<div> ${err.message} </div>`;
+        });
+}
 
 
 

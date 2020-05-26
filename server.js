@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const app = express();
 const { Users } = require('./models/user-model');
-// const { Posts } = require('./models/post-model');
+const { Posts } = require('./models/post-model');
 const { Comments } = require("./models/comments-model");
 const fetch = require("node-fetch");
 
@@ -139,31 +139,34 @@ app.post('/register', jsonParser, (req, res) => {
 });
 
 
-// app.post('/posts', jsonParser, (req, res) => {
-//     const {description,songId} = req.body;
+app.post('/posts', jsonParser, (req, res) => {
+    console.log("post serverjs");
+    const {description,song} = req.body;
 
-//     if (!songId || !description) {
-//         res.statusMessage = "Field or fields missing in request body";
-//         return res.status(406).end();
-//     }
+    if (!song || !description) {
+        res.statusMessage = "Field or fields missing in request body";
+        return res.status(406).end();
+    }
 
+    // Users
+    //     .getUserByUserName()
+    const newPost = {
+        description: description,
+        song : song,
+        // user : 
+    }
 
-//     const newPost = {
-//         description: description,
-//         songId : songId
-//     }
-
-//     Posts
-//         .createPost(newPost)
-//         .then(d => {
-//           console.log("New Post", newPost);
-//           return res.status(201).json(d);
-//         })
-//         .catch(_ => {
-//             res.statusMessage = "Something went wrong";
-//             return res.status(500).end();
-//         });
-//   });
+    Posts
+        .createPost(newPost)
+        .then(d => {
+          console.log("New Post", newPost);
+          return res.status(201).json(d);
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong";
+            return res.status(500).end();
+        });
+  });
 
 
 

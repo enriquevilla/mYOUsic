@@ -18,7 +18,7 @@ const postSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "comments",
     }]
-})
+});
 
 const postModel = mongoose.model("posts", postSchema);
 
@@ -26,11 +26,11 @@ const Posts = {
     createPost : function(newPost){
         return postModel
         .create(newPost)
-        .then( user => {
-            return user;
+        .then( post => {
+            return post;
         })
         .catch( err => {
-            throw new Error( err.message );
+            throw new Error( "Hola Error" );
         }); 
     },
     getAllPosts: function() {
