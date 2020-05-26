@@ -191,6 +191,11 @@ app.get("/allPosts", (_, res) => {
 app.post("/addComment", jsonParser, (req, res) => {
     const {postID, comment, username} = req.body;
 
+    if (!postID || !comment || !username) {
+        res.statusMessage = "Field or fields missing in request body";
+        return res.status(406).end();
+    }
+
     const newComment = {
         comment: comment,
         username: username,

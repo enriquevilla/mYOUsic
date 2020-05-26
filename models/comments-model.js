@@ -27,19 +27,6 @@ const Comments = {
             .catch( err => {
                 throw new Error(err.message);
             }); 
-    },
-    getCommentsOfPost: async function(comments){
-        //comments = object ids
-        let allResults = [];
-        for (let ObjectId of comments) {
-            const comments = await postModel.find({user: ObjectId})
-                                            .then(coms => {return coms})
-                                            .catch(err => {throw new Error(err.message)});
-            for (let c of comments) {
-                allResults += c;
-            }
-        }
-        return allResults;
     }
 }
 
