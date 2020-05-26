@@ -134,7 +134,7 @@ function addpostFech( songId, description){
     let data = {
         song : songId,
         description: description,
-        user : localStorage.getItem("userName")
+        username : localStorage.getItem("userName")
     }
 
     let settings = {

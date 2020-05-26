@@ -141,31 +141,39 @@ app.post('/register', jsonParser, (req, res) => {
 
 app.post('/posts', jsonParser, (req, res) => {
     console.log("post serverjs");
-    const {description,song} = req.body;
+    const {description, song, username} = req.body;
 
-    if (!song || !description) {
+    if (!song || !description || !username) {
         res.statusMessage = "Field or fields missing in request body";
         return res.status(406).end();
     }
 
-    // Users
-    //     .getUserByUserName()
-    const newPost = {
-        description: description,
-        song : song,
-        // user : 
-    }
-
-    Posts
-        .createPost(newPost)
-        .then(d => {
-          console.log("New Post", newPost);
-          return res.status(201).json(d);
+    Users
+        .getUserByUserName(username)
+        .then(userJSON => {
+            const newPost = {
+                description: description,
+                song : song,
+                user : userJSON._id
+            };
+            Posts
+                .createPost(newPost)
+                .then(post => {
+                    console.log("New Post", newPost);
+                    return res.status(201).json(post);
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong";
+                    return res.status(500).end();
+                });
         })
         .catch(_ => {
             res.statusMessage = "Something went wrong";
             return res.status(500).end();
-        });
+        })
+    
+
+    
   });
 
 
