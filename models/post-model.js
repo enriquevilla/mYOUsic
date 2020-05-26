@@ -37,6 +37,7 @@ const Posts = {
         return postModel
             .find()
             .populate("user", "userName")
+            .populate("comments", ["comment", "username"])
             .then(posts => {
                 return posts;
             })
@@ -62,17 +63,17 @@ const Posts = {
             .updateOne({_id: postID}, {$push: {"comments": commentID}})
             .then(_ => {
                 console.log(postID);
-                return this.getPostById(postID)
+                return this.getPostAfterUpdate(postID)
             })
             .catch(err => {
                 throw new Error(err.message);
             })
     },
-    getPostById: function(postID) {
+    getPostAfterUpdate: function(postID) {
         return postModel
             .findOne({_id: postID})
+            .populate("comments", ["comment", "username"])
             .then(post => {
-                console.log(post);
                 return post;
             })
             .catch(err => {

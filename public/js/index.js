@@ -13,7 +13,7 @@ function getAllPosts() {
             console.log(posts);
             for (let post of posts) {
                 document.querySelector(".results").innerHTML += `
-                    <div class="post-result">
+                    <div class="post-result" id="post${post._id}">
                         <h3 class="post-title">
                             ${post.description}
                         </h3>
@@ -34,26 +34,28 @@ function getAllPosts() {
                             Comments:
                         </p>
                     `;
-                    for (let comment of post.comments) {
+                    for (let c of post.comments) {
                         document.querySelector(`.comments${post._id}`).innerHTML += `
                             <p>
-                                ${comment}
+                                ${c.username}: ${c.comment}
                             </p>
                         `
                     }
                 }
-                document.querySelector(`.comments${post._id}`).innerHTML += `
+                document.querySelector(`#post${post._id}`).innerHTML += `
                     <form id="${post._id}">
                         <input type="text" class="form-control post-comment-input" placeholder="Comment" 
                             aria-label="Comment" id="commentinput${post._id}">
                     </form>
                 `;
-                console.log(post._id);
-                document.getElementById(`${post._id}`).addEventListener("submit", (e) => {
+            }
+            document.querySelectorAll("form").forEach(i => {
+                i.addEventListener("submit", (e) => {
                     e.preventDefault();
-                    const comment = document.getElementById(`${post._id}`).querySelector("input").value;
+                    const comment = e.target.querySelector("input").value;
                     const username = localStorage.getItem("userName");
-                    const postID = document.getElementById(`${post._id}`).parentNode.parentNode.id;
+                    const postID = e.target.id;
+                    e.target.querySelector("input").value = "";
                     const data = {
                         comment: comment,
                         username: username,
@@ -66,7 +68,6 @@ function getAllPosts() {
                         },
                         body : JSON.stringify(data)
                     };
-
                     fetch("/addComment", settings)
                         .then(response => {
                             if (response.ok) {
@@ -75,11 +76,16 @@ function getAllPosts() {
                                 throw new Error(response.statusText);
                             }
                         })
-                        .then(comments => {
-                            console.log(comments);
+                        .then(post => {
+                            const comments = post.comments.reverse();
+                            document.querySelector(`.comments${e.target.id}`).innerHTML += `
+                                <p>
+                                    ${comments[0].username}: ${comments[0].comment}
+                                </p>
+                            `
                         })
                 });
-            }
+            }) 
         })
         .catch(err => {
             document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
