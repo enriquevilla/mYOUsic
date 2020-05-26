@@ -26,7 +26,7 @@ function userRegisterFetch( userName, password ){
         })
         .then( responseJSON => {
             console.log( responseJSON );
-            // window.location.href="/login";
+            window.location.href="/login";
         })
         .catch( err => {
             results.innerHTML = `<div> ${err.message} </div>`;

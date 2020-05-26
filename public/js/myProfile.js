@@ -1,5 +1,5 @@
-function getAllPosts() {
-    fetch("/allPosts")
+function loadMyPosts() {
+    fetch(`/posts/${localStorage.getItem("userName")}`)
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -8,7 +8,6 @@ function getAllPosts() {
             }
         })
         .then(posts => {
-            // reverse to get newer posts first
             posts = posts.reverse();
             console.log(posts);
             for (let post of posts) {
@@ -20,9 +19,6 @@ function getAllPosts() {
                         <iframe src="https://open.spotify.com/embed/track/${post.song}" width="300" height="80" frameborder="0" 
                             allowtransparency="true" allow="encrypted-media">
                         </iframe>
-                        <p class="post-user">
-                            Post by: ${post.user.userName}
-                        </p>
                         <div class="comments${post._id}">
 
                         </div>
@@ -63,10 +59,10 @@ function getAllPosts() {
                     };
                     const settings = {
                         method: 'POST',
-                        headers: {
+                        headers : {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(data)
+                        body : JSON.stringify(data)
                     };
                     fetch("/addComment", settings)
                         .then(response => {
@@ -88,12 +84,13 @@ function getAllPosts() {
             }) 
         })
         .catch(err => {
-            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
+            results.innerHTML = `<div> ${err.message} </div>`;
         })
 }
 
 function init() {
-    getAllPosts();
+    document.title = localStorage.getItem("userName") + "'s Profile";
+    loadMyPosts();
 }
 
 init();
