@@ -64,6 +64,26 @@ const Users = {
             .catch(err => {
                 throw new Error(err.message);
             });
+    },
+    removeFavorite: function(username, postID) {
+        return userModel
+            .updateOne({userName: username}, {$pull: {favorites: postID}})
+            .then(_ => {
+                return _;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
+    },
+    removeFavoritesFromAll: function(postID) {
+        return userModel
+            .updateMany({}, {$pull: {favorites: postID}})
+            .then(_ => {
+                return _;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
     }
 }
 
