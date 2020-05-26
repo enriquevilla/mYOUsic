@@ -206,12 +206,12 @@ app.post("/addComment", jsonParser, (req, res) => {
                     return res.status(201).json(updatedPost);
                 })
                 .catch(_ => {
-                    res.statusMessage = "Something went wrong";
+                    res.statusMessage = "Something went wrong when updating post comments";
                     return res.status(500).end();
                 });
         })
-        .catch(_ => {
-            res.statusMessage = "Something went wrong";
+        .catch(err => {
+            res.statusMessage = "Something went wrong when adding comment.";
             return res.status(500).end();
         })
 
