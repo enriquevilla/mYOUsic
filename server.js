@@ -223,10 +223,7 @@ app.post("/addComment", jsonParser, (req, res) => {
             res.statusMessage = "Something went wrong when adding comment.";
             return res.status(500).end();
         })
-
 });
-
-
 
 app.post("/addFavorite", jsonParser, (req, res) => {
     const {postId, username} = req.body;
@@ -251,11 +248,36 @@ app.post("/addFavorite", jsonParser, (req, res) => {
                     res.statusMessage = "Something went wrong when creating Fav";
                     return res.status(500).end();
                 });
-            })
-       
+        })
 });
 
+app.post("/removeFavorite", jsonParser, (req, res) => {
+    const {username, postId} = req.body;
 
+    Users
+        .removeFavorite(username, postId)
+        .then(_ => {
+            return res.status(204).json({});
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when removing a favorite";
+            return res.status(500).end();
+        })
+});
+
+app.get("/favorites/:username", (req, res) => {
+    const {username} = req.params;
+
+    Users
+        .getUserByUserName(username)
+        .then(user => {
+            return res.status(200).json(user.favorites);
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting favorites by user";
+            return res.status(500).end();
+        })
+})
 
 app.get("/posts/:username", (req, res) => {
     const {username} = req.params;

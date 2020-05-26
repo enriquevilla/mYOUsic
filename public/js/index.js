@@ -45,48 +45,90 @@ function getAllPosts() {
                 document.querySelector(`#post${post._id}`).innerHTML += `
                     <form id="${post._id}">
                         <input type="text" class="form-control post-comment-input" placeholder="Comment" 
-                            aria-label="Comment" id="commentinput${post._id}">
-                        <button type="button" class="btn btn-primary favButton">Add to Favorites</button>
+                            aria-label="Comment">
                     </form>
                     
                 `;
             }
-            document.querySelectorAll(".favButton").forEach(i =>{
-                i.addEventListener("click",(e) => {
-                    e.preventDefault();
-                    const postId = e.target.parentElement.id;
-                    const username = localStorage.getItem("userName");
-                    console.log(postId);
-                    console.log(username);
-                    const data = {
-                        username : username,
-                        postId : postId
+            fetch(`/favorites/${localStorage.getItem("userName")}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(response.statusText);
                     }
-                    const settings = {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    };
-
-
-
-                    fetch("/addFavorite", settings)
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error(response.statusText);
-                            }
-                        })
-                        .then(responseJson=>{
-                            console.log(responseJson);
-                            
-                        })
-         
                 })
-            });
+                .then(favorites => {
+                    document.querySelectorAll("form").forEach(i => {
+                        if (favorites.includes(i.id)) {
+                            i.innerHTML += `
+                                <button type="button" class="btn btn-primary favButton">
+                                    Remove from favorites
+                                </button>
+                            `;
+                            i.querySelector(`.favButton`).addEventListener("click", (e) => {
+                                e.preventDefault();
+                                const postId = e.target.parentElement.id;
+                                const username = localStorage.getItem("userName");
+                                const data = {
+                                    username : username,
+                                    postId : postId
+                                }
+                                const settings = {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(data)
+                                };
+                                console.log(data);
+                                fetch("/removeFavorite", settings)
+                                    .then(response => {
+                                        if (response.ok) {
+                                            window.location.reload();
+                                        } else {
+                                            throw new Error(response.statusText);
+                                        }
+                                    })
+                            });
+                        } else {
+                            i.innerHTML += `
+                                <button type="button" class="btn btn-primary favButton">
+                                    Add to favorites
+                                </button>
+                            `;
+                            i.querySelector(`.favButton`).addEventListener("click", (e) => {
+                                    e.preventDefault();
+                                    const postId = e.target.parentElement.id;
+                                    const username = localStorage.getItem("userName");
+                                    const data = {
+                                        username : username,
+                                        postId : postId
+                                    }
+                                    const settings = {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(data)
+                                    };
+                                    console.log(data);
+                                    fetch("/addFavorite", settings)
+                                        .then(response => {
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else {
+                                                throw new Error(response.statusText);
+                                            }
+                                        })
+                                        .then(responseJson=>{
+                                            console.log(responseJson);
+                                            window.location.reload();
+                                        })
+                            });
+                        }
+                    })
+                })
             document.querySelectorAll("form").forEach(i => {
                 i.addEventListener("submit", (e) => {
                     e.preventDefault();
