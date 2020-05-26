@@ -31,6 +31,10 @@ app.get("/register", (_, res) => {
     res.sendFile(__dirname + "/public/pages/register.html");
 });
 
+app.get("/createPost", (_, res) => {
+    res.sendFile(__dirname + "/public/pages/createPost.html");
+});
+
 app.get("/validate-token", (req, res) => {
     let token = req.headers.sessiontoken;
     jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
@@ -140,7 +144,6 @@ app.post('/register', jsonParser, (req, res) => {
 
 
 app.post('/posts', jsonParser, (req, res) => {
-    console.log("post serverjs");
     const {description, song, username} = req.body;
 
     if (!song || !description || !username) {
@@ -171,13 +174,19 @@ app.post('/posts', jsonParser, (req, res) => {
             res.statusMessage = "Something went wrong";
             return res.status(500).end();
         })
-    
-
-    
   });
 
-
-
+app.get("/allPosts", (_, res) => {
+    Posts
+        .getAllPosts()
+        .then(posts => {
+            return res.status(200).json(posts);
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong";
+            return res.status(500).end();
+        })
+});
 
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");

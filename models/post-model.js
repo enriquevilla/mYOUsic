@@ -30,12 +30,13 @@ const Posts = {
             return post;
         })
         .catch( err => {
-            throw new Error( "Hola Error" );
+            throw new Error(err.message);
         }); 
     },
     getAllPosts: function() {
         return postModel
             .find()
+            .populate("user", "userName")
             .then(posts => {
                 return posts;
             })
