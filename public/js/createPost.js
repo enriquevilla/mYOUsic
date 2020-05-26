@@ -154,6 +154,7 @@ function addpostFech( songId, description){
         })
         .then( responseJSON => {
             console.log(responseJSON);
+            window.location.href = "/";
         })
         .catch( err => {
             results.innerHTML = `<div> ${err.message} </div>`;

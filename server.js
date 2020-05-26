@@ -188,6 +188,35 @@ app.get("/allPosts", (_, res) => {
         })
 });
 
+app.post("/addComment", jsonParser, (req, res) => {
+    const {postID, comment, username} = req.body;
+
+    const newComment = {
+        comment: comment,
+        username: username,
+        approved: true
+    }
+
+    Comments
+        .createComment(newComment)
+        .then(comment => {
+            Posts
+                .updatePostComments(postID, comment._id)
+                .then(updatedPost => {
+                    return res.status(201).json(updatedPost);
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong";
+                    return res.status(500).end();
+                });
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong";
+            return res.status(500).end();
+        })
+
+});
+
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
     new Promise((resolve, reject) => {

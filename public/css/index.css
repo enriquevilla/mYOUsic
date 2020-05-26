@@ -116,4 +116,11 @@ nav a {
 
 .post-user {
     color: white;
+    margin: 10px 0;
+    text-align: start;
+}
+
+.post-comment-input {
+    width: 80%;
+    margin-bottom: 16px;
 }
