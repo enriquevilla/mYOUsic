@@ -45,15 +45,14 @@ app.get("/validate-token", (req, res) => {
 });
 
 app.get("/genAccessToken", (req, res) => {
-    var myHeaders = new fetch.Headers();
+    let myHeaders = new fetch.Headers();
     myHeaders.append("Authorization", "Basic ZTZiOWUwNDdjMjY1NGFmZDgzYTUyZDVkNjY2NmM2NzI6YjRmMmNhNmQxNmM0NDRhYmIxODg0MzQ5MjQ5N2MwNjc=");
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    myHeaders.append("Cookie", "__Host-device_id=AQBUyYKF6DCGGPuIlOq90vnI79vpD8VZRfcUCuJo5KSCM3AqZo4Ol7M_cfu69r_SBQ_ItNmejwx2U3ODMskowv_fDyDHG88KSPc");
 
-    var urlencoded = new URLSearchParams();
+    let urlencoded = new URLSearchParams();
     urlencoded.append("grant_type", "client_credentials");
 
-    var requestOptions = {
+    let requestOptions = {
         method: 'POST',
         headers: myHeaders,
         body: urlencoded,
