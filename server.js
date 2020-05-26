@@ -35,6 +35,10 @@ app.get("/createPost", (_, res) => {
     res.sendFile(__dirname + "/public/pages/createPost.html");
 });
 
+app.get("/myProfile", (_, res) => {
+    res.sendFile(__dirname + "/public/pages/myProfile.html");
+})
+
 app.get("/validate-token", (req, res) => {
     let token = req.headers.sessiontoken;
     jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
@@ -215,11 +219,33 @@ app.post("/addComment", jsonParser, (req, res) => {
                     return res.status(500).end();
                 });
         })
-        .catch(err => {
+        .catch(_ => {
             res.statusMessage = "Something went wrong when adding comment.";
             return res.status(500).end();
         })
 
+});
+
+app.get("/posts/:username", (req, res) => {
+    const {username} = req.params;
+
+    Users
+        .getUserByUserName(username)
+        .then(userJSON => {
+            Posts
+                .getPostsByUserID(userJSON._id)
+                .then(posts => {
+                    return res.status(200).json(posts);
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong getting posts by own ID";
+                    return res.status(500).end();
+                });
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting user by username";
+            return res.status(500).end();
+        });
 });
 
 app.listen(PORT, () => {

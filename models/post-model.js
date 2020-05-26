@@ -80,11 +80,11 @@ const Posts = {
                 throw new Error(err.message);
             });
     },
-    getPostsByUser: function(userId){
+    getPostsByUserID: function(userId){
         return postModel
             .find({user: userId})
+            .populate("comments", ["comment", "username"])
             .then(users =>{
-                console.log(users);
                 return users;
             })
             .catch(err => {
