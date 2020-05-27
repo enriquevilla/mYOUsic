@@ -162,6 +162,9 @@ function addpostFech( songId, description){
 
 function init(){
     watchPostForm();
+    // if (localStorage.getItem("userName") === "admin") {
+    //     window.location.href = "/";
+    // }
 }
 
 init();

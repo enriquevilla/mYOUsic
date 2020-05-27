@@ -1,5 +1,5 @@
-function loadMyPosts() {
-    fetch(`/posts/${localStorage.getItem("userName")}`)
+function loadFavoritePosts() {
+    fetch(`/favposts/${localStorage.getItem("userName")}`)
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -11,10 +11,11 @@ function loadMyPosts() {
             if (posts.length === 0) {
                 document.querySelector(".results").innerHTML += `
                     <div>
-                        You have not made any posts yet
+                        You do not have any favorite posts
                     </div>
                 `;
             }
+            // reverse to get newer posts first
             posts = posts.reverse();
             console.log(posts);
             for (let post of posts) {
@@ -26,6 +27,9 @@ function loadMyPosts() {
                         <iframe src="https://open.spotify.com/embed/track/${post.song}" width="300" height="80" frameborder="0" 
                             allowtransparency="true" allow="encrypted-media">
                         </iframe>
+                        <p class="post-user">
+                            Post by: ${post.user.userName}
+                        </p>
                         <div class="comments${post._id}">
 
                         </div>
@@ -48,47 +52,53 @@ function loadMyPosts() {
                 document.querySelector(`#post${post._id}`).innerHTML += `
                     <form id="${post._id}">
                         <input type="text" class="form-control post-comment-input" placeholder="Comment" 
-                            aria-label="Comment" id="commentinput${post._id}">
+                            aria-label="Comment">
                     </form>
+                    
                 `;
-                const delButton = document.createElement("button");
-                delButton.innerHTML = "Delete";
-                delButton.classList.add("btn");
-                delButton.classList.add("btn-danger");
-                delButton.classList.add("deleteButton");
-                delButton.setAttribute("type", "button");
-                document.querySelector(`#post${post._id} > form`).append(delButton);
+                const username = localStorage.getItem("userName");
+                if (post.user.userName === username || username === "admin") {
+                    const delButton = document.createElement("button");
+                    delButton.innerHTML = "Delete";
+                    delButton.classList.add("btn");
+                    delButton.classList.add("btn-danger");
+                    delButton.classList.add("deleteButton");
+                    delButton.setAttribute("type", "button");
+                    document.querySelector(`#post${post._id} > form`).append(delButton);
+                }
             }
             document.querySelectorAll("form").forEach(i => {
-                i.addEventListener("click", (e) => {
-                    if (e.target.matches(".deleteButton")) {
-                        e.preventDefault();
-                        const postId = e.target.parentElement.id;
-                        const username = localStorage.getItem("userName");
-                        const data = {
-                            username: username,
-                            postId: postId
-                        }
-                        const settings = {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(data)
-                        }
-
-                        fetch("/deleteOwnPosts", settings)
-                            .then(response => {
-                                if (response.ok) {
-                                    window.location.reload();
-                                } else {
-                                    throw new Error(response.statusText);
-                                }
-                            })
+                i.innerHTML += `
+                    <button type="button" class="btn btn-primary favButton">
+                        Remove from favorites
+                    </button>
+                `;
+                i.querySelector(`.favButton`).addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const postId = e.target.parentElement.id;
+                    const username = localStorage.getItem("userName");
+                    const data = {
+                        username: username,
+                        postId: postId
                     }
-                })
-            });
-
+                    const settings = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    };
+                    console.log(data);
+                    fetch("/removeFavorite", settings)
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                throw new Error(response.statusText);
+                            }
+                        })
+                });
+            })
             document.querySelectorAll("form").forEach(i => {
                 i.addEventListener("submit", (e) => {
                     e.preventDefault();
@@ -103,10 +113,10 @@ function loadMyPosts() {
                     };
                     const settings = {
                         method: 'POST',
-                        headers : {
+                        headers: {
                             'Content-Type': 'application/json'
                         },
-                        body : JSON.stringify(data)
+                        body: JSON.stringify(data)
                     };
                     fetch("/addComment", settings)
                         .then(response => {
@@ -122,19 +132,18 @@ function loadMyPosts() {
                                 <p>
                                     ${comments[0].username}: ${comments[0].comment}
                                 </p>
-                            `;
+                            `
                         })
                 });
-            }) 
+            })
         })
         .catch(err => {
-            results.innerHTML = `<div> ${err.message} </div>`;
+            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
         })
 }
 
 function init() {
-    document.title = localStorage.getItem("userName") + "'s Profile";
-    loadMyPosts();
+    loadFavoritePosts();
 }
 
 init();

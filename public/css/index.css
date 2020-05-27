@@ -85,6 +85,10 @@ nav a {
     color: red;
 }
 
+/* body > a {
+    display: none;
+} */
+
 .post-button {
     position: fixed;
     right: 20px;

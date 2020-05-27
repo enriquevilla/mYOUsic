@@ -8,14 +8,18 @@ let settings = {
 
 fetch( url, settings )
     .then( response => {
-        if( response.ok ){
+        if ( response.ok ){
             return response.json();
         }
         throw new Error( response.statusText );
     })
-    .then( responseJSON => {
+    .then(responseJSON => {
         localStorage.setItem("userName",`${responseJSON.userName}`);
-        console.log( responseJSON );
+        // const username = localStorage.getItem("userName");
+        // if (username !== "admin") {
+        //     addButton = document.querySelector("body > a");
+        //     addButton.setAttribute("style", "display: initial");
+        // }
     })
     .catch( err => {
         console.log(err);

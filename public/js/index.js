@@ -212,20 +212,8 @@ function getAllPosts() {
         })
 }
 
-function admin(){
-    const username = localStorage.getItem("userName");
-    console.log("admin funct");
-    if (username === "admin") {
-        addButton = document.querySelector(".rounded-circle ");
-        addButton.setAttribute("style","display:none");
-    }
-}
-
-
 function init() {
-    admin();
     getAllPosts();
-    
 }
 
 init();
