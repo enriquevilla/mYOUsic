@@ -46,26 +46,18 @@ function getAllPosts() {
                     <form id="${post._id}">
                         <input type="text" class="form-control post-comment-input" placeholder="Comment" 
                             aria-label="Comment">
-                        <div class = "row deleteAndAdd" id ="deleteAndAdd">
-                        </div>
                     </form>
                     
                 `;
                 const username = localStorage.getItem("userName");
-                if (post.user.userName ==  username) {
-                    const newDiv = document.createElement("div");
-                    newDiv.classList.add("col-6");
+                if (post.user.userName === username) {
                     const delButton = document.createElement("button");
                     delButton.innerHTML = "Delete";
                     delButton.classList.add("btn");
                     delButton.classList.add("btn-danger");
                     delButton.classList.add("deleteButton");
-                    delButton.setAttribute("type","button");
-                    newDiv.appendChild(delButton);
-
-                    const newDelete = document.querySelector(`#post${post._id} > form > #deleteAndAdd`);
-
-                    newDelete.appendChild(newDiv);
+                    delButton.setAttribute("type", "button");
+                    document.querySelector(`#post${post._id} > form`).append(delButton);
                 }
             }
             fetch(`/favorites/${localStorage.getItem("userName")}`)
@@ -89,8 +81,8 @@ function getAllPosts() {
                                 const postId = e.target.parentElement.id;
                                 const username = localStorage.getItem("userName");
                                 const data = {
-                                    username : username,
-                                    postId : postId
+                                    username: username,
+                                    postId: postId
                                 }
                                 const settings = {
                                     method: 'POST',
@@ -116,111 +108,64 @@ function getAllPosts() {
                                 </button>
                             `;
                             i.querySelector(`.favButton`).addEventListener("click", (e) => {
-                                    e.preventDefault();
-                                    const postId = e.target.parentElement.id;
-                                    const username = localStorage.getItem("userName");
-                                    const data = {
-                                        username : username,
-                                        postId : postId
-                                    }
-                                    const settings = {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify(data)
-                                    };
-                                    console.log(data);
-                                    fetch("/addFavorite", settings)
-                                        .then(response => {
-                                            if (response.ok) {
-                                                return response.json();
-                                            } else {
-                                                throw new Error(response.statusText);
-                                            }
-                                        })
-                                        .then(responseJson=>{
-                                            console.log(responseJson);
-                                            window.location.reload();
-                                        })
+                                e.preventDefault();
+                                const postId = e.target.parentElement.id;
+                                const username = localStorage.getItem("userName");
+                                const data = {
+                                    username: username,
+                                    postId: postId
+                                }
+                                const settings = {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(data)
+                                };
+                                console.log(data);
+                                fetch("/addFavorite", settings)
+                                    .then(response => {
+                                        if (response.ok) {
+                                            return response.json();
+                                        } else {
+                                            throw new Error(response.statusText);
+                                        }
+                                    })
+                                    .then(_ => {
+                                        window.location.reload();
+                                    })
                             });
                         }
                     })
                 })
 
+            document.querySelectorAll("form").forEach(i => {
+                i.addEventListener("click", (e) => {
+                    if (e.target.matches(".deleteButton")) {
+                        e.preventDefault();
+                        const postId = e.target.parentElement.id;
+                        const username = localStorage.getItem("userName");
+                        const data = {
+                            username: username,
+                            postId: postId
+                        }
+                        const settings = {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        }
 
-            document.querySelectorAll(".favButton").forEach(i =>{
-                i.addEventListener("click",(e) => {
-                    e.preventDefault();
-                    const postId = e.target.parentElement.parentElement.parentElement.id;
-                    const username = localStorage.getItem("userName");
-                    console.log(postId);
-                    console.log(username);
-                    const data = {
-                        username : username,
-                        postId : postId
+                        fetch("/deleteOwnPosts", settings)
+                            .then(response => {
+                                if (response.ok) {
+                                    window.location.reload();
+                                } else {
+                                    throw new Error(response.statusText);
+                                }
+                            })
                     }
-                    const settings = {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    };
-
-                    fetch("/addFavorite", settings)
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error(response.statusText);
-                            }
-                        })
-                        .then(responseJson=>{
-                            console.log(responseJson);
-
-                        })
-         
-                })
-            });
-        
-
-            document.querySelectorAll(".deleteButton").forEach(i =>{
-                console.log("E" + i);
-                i.addEventListener("click",(e) => {
-                    console.log("entro");
-
-                    e.preventDefault();
-                    const postId = e.target.parentElement.parentElement.parentElement.id;
-                    const username = localStorage.getItem("userName");
-                    console.log("postid button  " + postId);
-                    console.log(username);
-                    const data = {
-                        username : username,
-                        postId : postId
-                    }
-                    const settings = {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    }
-
-                    fetch("/deleteOwnPosts", settings)
-                        .then(response => {
-                            if (response.ok) {
-                                window.location.href = "/";
-                                return response.json();
-                            } else {
-                                throw new Error(response.statusText);
-                            }
-                        })
-                        .then(responseJson=>{
-                            console.log(responseJson);
-
-                        })
-         
                 })
             });
 
@@ -260,7 +205,7 @@ function getAllPosts() {
                             `
                         })
                 });
-            }) 
+            })
         })
         .catch(err => {
             document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
