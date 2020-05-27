@@ -88,9 +88,20 @@ function loadMyPosts() {
         })
 }
 
+function admin(){
+    const username = localStorage.getItem("userName");
+    console.log("admin funct");
+    if (username === "admin") {
+        addButton = document.querySelector(".rounded-circle ");
+        addButton.setAttribute("style","display:none");
+    }
+}
+
 function init() {
+    admin();
     document.title = localStorage.getItem("userName") + "'s Profile";
     loadMyPosts();
+    
 }
 
 init();
