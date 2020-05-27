@@ -50,7 +50,7 @@ function getAllPosts() {
                     
                 `;
                 const username = localStorage.getItem("userName");
-                if (post.user.userName === username) {
+                if (post.user.userName === username || username === "admin") {
                     const delButton = document.createElement("button");
                     delButton.innerHTML = "Delete";
                     delButton.classList.add("btn");
@@ -212,8 +212,20 @@ function getAllPosts() {
         })
 }
 
+function admin(){
+    const username = localStorage.getItem("userName");
+    console.log("admin funct");
+    if (username === "admin") {
+        addButton = document.querySelector(".rounded-circle ");
+        addButton.setAttribute("style","display:none");
+    }
+}
+
+
 function init() {
+    admin();
     getAllPosts();
+    
 }
 
 init();
