@@ -308,9 +308,8 @@ app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
     }
     Users
         .getUserByUserName(username)
-        .then(userJson=>{
+        .then(userJson => {
             Posts
-                
                 .deleteOwnPosts(userJson._id,postId)
                 .then(deleted => {
                     return res.status(200).json(deleted);
@@ -321,7 +320,6 @@ app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
                 });
         })
 })
-
 
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
