@@ -37,7 +37,7 @@ const Posts = {
         return postModel
             .find()
             .populate("user", "userName")
-            .populate("comments", ["comment", "username"])
+            .populate("comments", ["comment", "username", "approved"])
             .then(posts => {
                 return posts;
             })
@@ -62,7 +62,6 @@ const Posts = {
         return postModel
             .updateOne({_id: postID}, {$push: {"comments": commentID}})
             .then(_ => {
-                console.log(postID);
                 return this.getPostAfterUpdate(postID)
             })
             .catch(err => {
@@ -72,7 +71,7 @@ const Posts = {
     getPostAfterUpdate: function(postID) {
         return postModel
             .findOne({_id: postID})
-            .populate("comments", ["comment", "username"])
+            .populate("comments", ["comment", "username", "approved"])
             .then(post => {
                 return post;
             })
@@ -83,7 +82,8 @@ const Posts = {
     getPostsByUserID: function(userId){
         return postModel
             .find({user: userId})
-            .populate("comments", ["comment", "username"])
+            .populate("comments", ["comment", "username", "approved"])
+            .populate("user", ["userName"])
             .then(users =>{
                 return users;
             })
@@ -92,8 +92,6 @@ const Posts = {
             });
     },
     deleteOwnPosts: function(userId, postId){
-        console.log("userrr" + userId);
-        console.log("postIdd" + postId);
         return postModel
             .findOneAndDelete({_id:postId})
             .then(removed=>{
@@ -106,7 +104,28 @@ const Posts = {
             .catch( err => {
                 throw new Error( err );
             });
-        }
+    },
+    getPostByID: function(postID) {
+        return postModel
+            .findOne({_id: postID})
+            .then(post => {
+                return post;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
+    },
+    getPostsByUsername: function(username) {
+        return postModel
+            .find()
+            .populate("user", "userName")
+            .then(posts => {
+                return posts;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
+    }
 }
 
 module.exports = {
