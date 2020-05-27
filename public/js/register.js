@@ -41,9 +41,17 @@ function watchRegisterForm(){
     registerForm.addEventListener( 'submit' , ( event ) => {
         event.preventDefault();
         let userName = document.getElementById( 'userName' ).value;
-        let password = document.getElementById( 'userPassword' ).value;
+        if (/^[a-z]+$/.test(userName)) {
+            let password = document.getElementById( 'userPassword' ).value;
+            userRegisterFetch( userName, password );
+        } else {
+            document.querySelector( '.results' ).innerHTML = `
+                <div>
+                    Usernames can only contain lowercase letters
+                </div>
+            `;
+        }
 
-        userRegisterFetch( userName, password );
     })
 }
 
