@@ -82,6 +82,28 @@ const Users = {
             .catch(err => {
                 throw new Error(err.message);
             })
+    },
+    getFavoritesByUsername: function(username) {
+        return userModel
+            .findOne({userName: username})
+            .populate({
+                path: 'favorites',
+                populate: {
+                  path: 'user'
+                }
+            })
+            .populate({
+                path: 'favorites',
+                populate: {
+                  path: 'comments'
+                }
+            })
+            .then(user => {
+                return user;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
     }
 }
 

@@ -33,4 +33,20 @@ if (localStorage.getItem("token")) {
         document.querySelector(".index-active").classList.remove("index-active");
         myProfileLi.classList.add("index-active");
     }
+
+    const favoritesLi = document.createElement("li");
+    favoritesLi.classList.add("nav-item");
+    const favoritesAnchor = document.createElement("a");
+    favoritesAnchor.classList.add("nav-link");
+    favoritesAnchor.style.cursor = "pointer";
+    favoritesAnchor.innerText = "Favorites";
+    favoritesLi.appendChild(favoritesAnchor);
+    favoritesLi.addEventListener("click", () => {
+        window.location.href = "/favorites";
+    });
+    myProfileLi.after(favoritesLi);
+    if (window.location.pathname === "/favorites") {
+        document.querySelector(".index-active").classList.remove("index-active");
+        favoritesLi.classList.add("index-active");
+    }
 }

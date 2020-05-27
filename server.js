@@ -37,7 +37,11 @@ app.get("/createPost", (_, res) => {
 
 app.get("/myProfile", (_, res) => {
     res.sendFile(__dirname + "/public/pages/myProfile.html");
-})
+});
+
+app.get("/favorites", (_, res) => {
+    res.sendFile(__dirname + "/public/pages/favorites.html")
+});
 
 app.get("/validate-token", (req, res) => {
     let token = req.headers.sessiontoken;
@@ -315,11 +319,25 @@ app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
                     return res.status(200).json(deleted);
                 })
                 .catch(_ => {
-                    res.statusMessage = "Something went wrong when deleting";
+                    res.statusMessage = "Something went wrong when deleting post";
                     return res.status(500).end();
                 });
         })
-})
+});
+
+app.get("/favposts/:username", (req, res) => {
+    const {username} = req.params;
+
+    Users
+        .getFavoritesByUsername(username)
+        .then(userJSON => {
+            return res.status(200).json(userJSON.favorites);
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting favorite posts";
+            return res.status(500).end();
+        })
+});
 
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
