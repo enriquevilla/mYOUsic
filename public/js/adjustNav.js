@@ -29,5 +29,8 @@ if (localStorage.getItem("token")) {
         window.location.href = "/myProfile";
     });
     document.querySelector(".index-active").after(myProfileLi);
-
+    if (window.location.pathname === "/myProfile") {
+        document.querySelector(".index-active").classList.remove("index-active");
+        myProfileLi.classList.add("index-active");
+    }
 }
