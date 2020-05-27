@@ -52,9 +52,9 @@ const Users = {
                 throw new Error( err.message );
             }); 
     },
-    createFavorite: function(userId, postId){
+    createFavorite: function(username, postId){
         return userModel
-            .updateOne({_id: userId}, {$push: {"favorites": postId}})
+            .updateOne({userName: username}, {$push: {"favorites": postId}})
             .then(_ => {
                 console.log(postId);
                 return _

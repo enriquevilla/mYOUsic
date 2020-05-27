@@ -204,29 +204,41 @@ app.post("/addComment", jsonParser, (req, res) => {
         return res.status(406).end();
     }
 
-    const newComment = {
+    let newComment = {
         comment: comment,
         username: username,
-        approved: true
+        approved: false
     }
 
-    Comments
-        .createComment(newComment)
-        .then(comment => {
+    Users
+        .getUserByUserName(username)
+        .then(user => {
             Posts
-                .updatePostComments(postID, comment._id)
-                .then(updatedPost => {
-                    return res.status(201).json(updatedPost);
+                .getPostByID(postID)
+                .then(post => {
+                    if (String(post.user) === String(user._id)) {
+                        newComment.approved = true;
+                    }
+                    Comments
+                        .createComment(newComment)
+                        .then(comment => {
+                            Posts
+                                .updatePostComments(postID, comment._id)
+                                .then(updatedPost => {
+                                    return res.status(201).json(updatedPost.comments);
+                                })
+                                .catch(_ => {
+                                    res.statusMessage = "Something went wrong when updating post comments";
+                                    return res.status(500).end();
+                                });
+                        })
+                        .catch(_ => {
+                            res.statusMessage = "Something went wrong when adding comment.";
+                            return res.status(500).end();
+                        })
                 })
-                .catch(_ => {
-                    res.statusMessage = "Something went wrong when updating post comments";
-                    return res.status(500).end();
-                });
         })
-        .catch(_ => {
-            res.statusMessage = "Something went wrong when adding comment.";
-            return res.status(500).end();
-        })
+
 });
 
 app.post("/addFavorite", jsonParser, (req, res) => {
@@ -238,18 +250,14 @@ app.post("/addFavorite", jsonParser, (req, res) => {
     }
 
     Users
-        .getUserByUserName(username)
-        .then(userJson=>{
-            Users
-                .createFavorite(userJson._id, postId)
-                .then(favJSON => {
-                    return res.status(200).json(favJSON);
-                })
-                .catch(_ => {
-                    res.statusMessage = "Something went wrong when creating Fav";
-                    return res.status(500).end();
-                });
+        .createFavorite(username, postId)
+        .then(favJSON => {
+            return res.status(200).json(favJSON);
         })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when creating favorite";
+            return res.status(500).end();
+        });
 });
 
 app.post("/removeFavorite", jsonParser, (req, res) => {
@@ -337,6 +345,20 @@ app.get("/favposts/:username", (req, res) => {
             res.statusMessage = "Something went wrong when getting favorite posts";
             return res.status(500).end();
         })
+});
+
+app.get("/approveComments/:username", (req, res) => {
+    const {username} = req.params;
+
+    Posts
+        .getPostsByUsername(username)
+        .then(posts => {
+            return res.status(200).json(posts);
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting posts by username";
+            return res.status(500).end();
+        });
 });
 
 app.listen(PORT, () => {
