@@ -301,6 +301,31 @@ app.get("/posts/:username", (req, res) => {
         });
 });
 
+app.delete("/deleteOwnPosts",jsonParser,(req,res)=>{
+    const {postId, username} = req.body;
+    console.log("Hello" + postId);
+    console.log("Hello" + username);
+    if (!postId || !username) {
+        res.statusMessage = "Field or fields missing in request body";
+        return res.status(406).end();
+    }
+    Users
+        .getUserByUserName(username)
+        .then(userJson=>{
+            Posts
+                
+                .deleteOwnPosts(userJson._id,postId)
+                .then(deleted => {
+                    return res.status(200).json(deleted);
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong when deleting";
+                    return res.status(500).end();
+                });
+        })
+})
+
+
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
     new Promise((resolve, reject) => {

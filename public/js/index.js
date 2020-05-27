@@ -46,9 +46,27 @@ function getAllPosts() {
                     <form id="${post._id}">
                         <input type="text" class="form-control post-comment-input" placeholder="Comment" 
                             aria-label="Comment">
+                        <div class = "row deleteAndAdd" id ="deleteAndAdd">
+                        </div>
                     </form>
                     
                 `;
+                const username = localStorage.getItem("userName");
+                if (post.user.userName ==  username) {
+                    const newDiv = document.createElement("div");
+                    newDiv.classList.add("col-6");
+                    const delButton = document.createElement("button");
+                    delButton.innerHTML = "Delete";
+                    delButton.classList.add("btn");
+                    delButton.classList.add("btn-danger");
+                    delButton.classList.add("deleteButton");
+                    delButton.setAttribute("type","button");
+                    newDiv.appendChild(delButton);
+
+                    const newDelete = document.querySelector(`#post${post._id} > form > #deleteAndAdd`);
+
+                    newDelete.appendChild(newDiv);
+                }
             }
             fetch(`/favorites/${localStorage.getItem("userName")}`)
                 .then(response => {
@@ -129,6 +147,83 @@ function getAllPosts() {
                         }
                     })
                 })
+
+
+            document.querySelectorAll(".favButton").forEach(i =>{
+                i.addEventListener("click",(e) => {
+                    e.preventDefault();
+                    const postId = e.target.parentElement.parentElement.parentElement.id;
+                    const username = localStorage.getItem("userName");
+                    console.log(postId);
+                    console.log(username);
+                    const data = {
+                        username : username,
+                        postId : postId
+                    }
+                    const settings = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    };
+
+                    fetch("/addFavorite", settings)
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error(response.statusText);
+                            }
+                        })
+                        .then(responseJson=>{
+                            console.log(responseJson);
+
+                        })
+         
+                })
+            });
+        
+
+            document.querySelectorAll(".deleteButton").forEach(i =>{
+                console.log("E" + i);
+                i.addEventListener("click",(e) => {
+                    console.log("entro");
+
+                    e.preventDefault();
+                    const postId = e.target.parentElement.parentElement.parentElement.id;
+                    const username = localStorage.getItem("userName");
+                    console.log("postid button  " + postId);
+                    console.log(username);
+                    const data = {
+                        username : username,
+                        postId : postId
+                    }
+                    const settings = {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    }
+
+                    fetch("/deleteOwnPosts", settings)
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.href = "/";
+                                return response.json();
+                            } else {
+                                throw new Error(response.statusText);
+                            }
+                        })
+                        .then(responseJson=>{
+                            console.log(responseJson);
+
+                        })
+         
+                })
+            });
+
             document.querySelectorAll("form").forEach(i => {
                 i.addEventListener("submit", (e) => {
                     e.preventDefault();

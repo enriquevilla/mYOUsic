@@ -90,7 +90,23 @@ const Posts = {
             .catch(err => {
                 throw new Error(err.message);
             });
-    }
+    },
+    deleteOwnPosts: function(userId, postId){
+        console.log("userrr" + userId);
+        console.log("postIdd" + postId);
+        return postModel
+            .findOneAndDelete({_id:postId})
+            .then(removed=>{
+                console.log("result", removed);
+                if(removed==null){
+                    throw new Error();
+                }
+                return "Deleted";
+            })
+            .catch( err => {
+                throw new Error( err );
+            });
+        }
 }
 
 module.exports = {
