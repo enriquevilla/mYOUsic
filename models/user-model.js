@@ -53,8 +53,6 @@ const Users = {
             }); 
     },
     createFavorite: function(userId, postId){
-        console.log("user:" + userId)
-        console.log("post:" + postId)
         return userModel
             .updateOne({_id: userId}, {$push: {"favorites": postId}})
             .then(_ => {
