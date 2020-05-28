@@ -183,3 +183,14 @@ label[for=Title]
 .greenC{
     background-color: #56e39f !important;
 }
+
+.create-post{
+    align-content: center;
+}
+
+.results{
+    max-width: 450px;
+    margin: auto;
+    padding-top: 30px;
+
+}
