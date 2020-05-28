@@ -134,6 +134,34 @@ function addCommentEventListener(i) {
     });
 }
 
+function addDeleteButtonEventListener(i) {
+    i.addEventListener("click", (e) => {
+        if (e.target.matches(".deleteButton")) {
+            e.preventDefault();
+            const postId = e.target.parentElement.id;
+            const data = {
+                postId: postId
+            }
+            const settings = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+
+            fetch("/deleteOwnPosts", settings)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        throw new Error(response.statusText);
+                    }
+                })
+        }
+    });
+}
+
 function loadFavoritePosts() {
     fetch(`/favposts/${localStorage.getItem("userName")}`)
         .then(response => {
@@ -157,10 +185,13 @@ function loadFavoritePosts() {
             }
             document.querySelectorAll("form").forEach(i => {
                 addRemoveFavoriteButton(i);
-            })
+            });
             document.querySelectorAll("form").forEach(i => {
                 addCommentEventListener(i);
-            })
+            });
+            document.querySelectorAll("form").forEach(i => {
+                addDeleteButtonEventListener(i);
+            });
         })
         .catch(err => {
             document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
@@ -168,7 +199,7 @@ function loadFavoritePosts() {
 }
 
 function checkCommentsToApprove() {
-    fetch(`/commentsToApprove/${localStorage.getItem("userName")}`)
+    fetch(`/allPosts`)
         .then(response => {
             if (response.ok) {
                 return response.json()
