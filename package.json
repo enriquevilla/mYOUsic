@@ -17,10 +17,5 @@
     "mongoose": "^5.9.14",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.4"
-  },
-  "proxy": {
-    "/api": {
-      "target": "http://localhost:8080"
-    }
   }
 }
