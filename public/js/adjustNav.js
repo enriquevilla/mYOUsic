@@ -8,6 +8,7 @@ if (localStorage.getItem("token")) {
     logOutAnchor.classList.add("nav-link");
     logOutAnchor.style.cursor = "pointer";
     logOutAnchor.innerText = "Log out";
+    logOutAnchor.classList.add("centered")
     logOutLi.appendChild(logOutAnchor);
     logOutLi.addEventListener("click", () => {
         localStorage.clear();
@@ -24,6 +25,7 @@ if (localStorage.getItem("token")) {
     myProfileAnchor.classList.add("nav-link");
     myProfileAnchor.style.cursor = "pointer";
     myProfileAnchor.innerText = "My Profile";
+    myProfileAnchor.classList.add("centered")
     myProfileLi.appendChild(myProfileAnchor);
     myProfileLi.addEventListener("click", () => {
         window.location.href = "/myProfile";
@@ -40,6 +42,7 @@ if (localStorage.getItem("token")) {
     favoritesAnchor.classList.add("nav-link");
     favoritesAnchor.style.cursor = "pointer";
     favoritesAnchor.innerText = "Favorites";
+    favoritesAnchor.classList.add("centered")
     favoritesLi.appendChild(favoritesAnchor);
     favoritesLi.addEventListener("click", () => {
         window.location.href = "/favorites";
