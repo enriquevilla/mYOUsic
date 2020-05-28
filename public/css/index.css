@@ -158,3 +158,28 @@ body > a[href='/approveComments'] {
 .deleteButton {
     margin-bottom: 16px;
 }
+
+label[for=Description]
+{
+    color: #56e39f;
+    font-weight: bold;
+    font-size: 25px;
+}
+label[for=Title]
+{
+    color: #56e39f;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.centered{
+    text-align: center;
+}
+
+.post-form-class{
+    padding-top: 25px;
+}
+
+.greenC{
+    background-color: #56e39f !important;
+}
