@@ -12,7 +12,7 @@ const fetch = require("node-fetch");
 
 const jsonParser = bodyParser.json();
 
-app.use(express.static("public"));
+app.use(express.static(__dirname + "public"));
 
 const cors = require("./middleware/cors");
 app.use(cors);
