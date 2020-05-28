@@ -53,6 +53,24 @@ if (localStorage.getItem("token")) {
         favoritesLi.classList.add("index-active");
     }
 
+    const followingLi = document.createElement("li");
+    followingLi.classList.add("nav-item");
+    const followingAnchor = document.createElement("a");
+    followingAnchor.classList.add("nav-link");
+    followingAnchor.style.cursor = "pointer";
+    followingAnchor.innerText = "Followed";
+    followingAnchor.classList.add("centered");
+    followingLi.appendChild(followingAnchor);
+    followingLi.addEventListener("click", () => {
+        window.location.href = "/followedUserPosts";
+    });
+    favoritesLi.after(followingLi);
+
+    if (window.location.pathname === "/followedUserPosts") {
+        document.querySelector(".index-active").classList.remove("index-active");
+        followingLi.classList.add("index-active");
+    }
+
     if (window.location.pathname === "/approveComments") {
         document.querySelector(".index-active").classList.remove("index-active");
     }

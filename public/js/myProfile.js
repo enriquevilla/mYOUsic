@@ -245,7 +245,7 @@ function loadMyPosts() {
             }) 
         })
         .catch(err => {
-            results.innerHTML = `<div> ${err.message} </div>`;
+            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
         })
 }
 
