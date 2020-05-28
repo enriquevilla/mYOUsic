@@ -17,6 +17,13 @@ app.use(express.static("public"));
 const cors = require("./middleware/cors");
 app.use(cors);
 
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'));
+}
+app.get('*',(_, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+});
+
 // Application routing
 app.get("/", (_, res) => {
     res.sendFile(__dirname + "/public/index.html");
@@ -131,7 +138,7 @@ app.post('/login', jsonParser, (req, res) => {
 
 })
 
-app.post('/registerUser', jsonParser, (req, res) => {
+app.post('/register', jsonParser, (req, res) => {
     let { userName, password } = req.body;
 
     if (!userName || !password) {
@@ -458,7 +465,6 @@ app.get("/getPostsFromFollowed/:username", (req, res) => {
                     return res.status(500).end();
                 })
         })
-
 });
 
 app.listen(PORT, () => {
