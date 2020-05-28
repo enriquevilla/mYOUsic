@@ -86,7 +86,8 @@ function loadCommentsToApprove() {
             }
         })
         .then(posts => {
-            const filteredPosts = posts.filter(i => {
+            const newerPosts = posts.reverse();
+            const filteredPosts = newerPosts.filter(i => {
                 return localStorage.getItem("userName") === i.user.userName;
             })
             for (let p of filteredPosts) {
@@ -94,12 +95,18 @@ function loadCommentsToApprove() {
                 for (let c of p.comments) {
                     approvedArray.push(c.approved);
                 }
+                if (approvedArray.length === 0) {
+                    throw new Error("No posts to approve.");
+                }
                 if (approvedArray.includes(false)) {
                     addPost(p);
                     addCommentsToApprove(p);
                 }
             }
             addEventListenerToButtons();
+        })
+        .catch(err => {
+            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
         });
 }
 
