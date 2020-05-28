@@ -252,12 +252,32 @@ function getAllPosts() {
         })
 }
 
-function checkCommentApproval() {
-    
+function checkCommentsToApprove() {
+    fetch(`/commentsToApprove/${localStorage.getItem("userName")}`)
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error(response.statusText);
+            }
+        })
+        .then(posts => {
+            const filteredPosts = posts.filter(i => {
+                return localStorage.getItem("userName") === i.user.userName;
+            })
+            for (let p of filteredPosts) {
+                for (let c of p.comments) {
+                    if (!c.approved) {
+                        document.querySelector("body > a[href='/approveComments']").style.display = "initial";
+                    }
+                }
+            }
+        });
 }
 
 function init() {
     getAllPosts();
+    checkCommentsToApprove();
 }
 
 init();

@@ -49,4 +49,12 @@ if (localStorage.getItem("token")) {
         document.querySelector(".index-active").classList.remove("index-active");
         favoritesLi.classList.add("index-active");
     }
+
+    if (window.location.pathname === "/approveComments") {
+        document.querySelector(".index-active").classList.remove("index-active");
+    }
+
+    if (window.location.pathname === "/createPost") {
+        document.querySelector(".index-active").classList.remove("index-active");
+    }
 }

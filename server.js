@@ -43,6 +43,10 @@ app.get("/favorites", (_, res) => {
     res.sendFile(__dirname + "/public/pages/favorites.html")
 });
 
+app.get("/approveComments", (_, res) => {
+    res.sendFile(__dirname + "/public/pages/approveComments.html")
+})
+
 app.get("/validate-token", (req, res) => {
     let token = req.headers.sessiontoken;
     jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
@@ -347,7 +351,7 @@ app.get("/favposts/:username", (req, res) => {
         })
 });
 
-app.get("/approveComments/:username", (req, res) => {
+app.get("/commentsToApprove/:username", (req, res) => {
     const {username} = req.params;
 
     Posts
@@ -359,6 +363,20 @@ app.get("/approveComments/:username", (req, res) => {
             res.statusMessage = "Something went wrong when getting posts by username";
             return res.status(500).end();
         });
+});
+
+app.patch("/approveComment", jsonParser, (req, res) => {
+    const {commentID} = req.body;
+
+    Comments
+        .approveComment(commentID)
+        .then(_ => {
+            return res.status(204).json({})
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when approving a comment";
+            return res.status(500).end();
+        })
 });
 
 app.listen(PORT, () => {
