@@ -58,7 +58,7 @@ function addDeleteButton(post) {
 
 function addRemoveFavoriteButton(i) {
     i.innerHTML += `
-        <button type="button" class="btn btn-primary favButton">
+        <button type="button" class="btn favButton greenC letterStyle">
             Remove from favorites
         </button>
     `;
@@ -91,7 +91,7 @@ function addRemoveFavoriteButton(i) {
 
 function addFavoriteButton(i) {
     i.innerHTML += `
-        <button type="button" class="btn btn-primary favButton">
+        <button type="button" class="btn favButton greenC letterStyle">
             Add to favorites
         </button>
     `;
