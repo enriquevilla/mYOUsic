@@ -119,6 +119,7 @@ const Posts = {
         return postModel
             .find()
             .populate("user", "userName")
+            .populate("comments", ["comment", "username", "approved"])
             .then(posts => {
                 return posts;
             })

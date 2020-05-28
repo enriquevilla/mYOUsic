@@ -27,6 +27,16 @@ const Comments = {
             .catch( err => {
                 throw new Error(err.message);
             }); 
+    },
+    approveComment: function(commentID) {
+        return commentModel
+            .updateOne({_id: commentID}, {$set: {approved: true}})
+            .then(_ => {
+                return _;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
     }
 }
 
