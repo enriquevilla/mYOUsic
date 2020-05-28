@@ -96,7 +96,7 @@ function loadCommentsToApprove() {
                     approvedArray.push(c.approved);
                 }
                 if (approvedArray.length === 0) {
-                    throw new Error("No posts to approve.");
+                    throw new Error("No comments to approve");
                 }
                 if (approvedArray.includes(false)) {
                     addPost(p);
