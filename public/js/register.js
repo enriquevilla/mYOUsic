@@ -15,7 +15,7 @@ function userRegisterFetch( userName, password ){
     }
 
     let results = document.querySelector( '.results' );
-
+    console.log(data);
     fetch( url, settings )
         .then( response => {
             if( response.ok ){   
