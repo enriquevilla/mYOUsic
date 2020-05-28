@@ -379,6 +379,20 @@ app.patch("/approveComment", jsonParser, (req, res) => {
         })
 });
 
+app.delete("/rejectComment", jsonParser, (req, res) => {
+    const {commentID} = req.body;
+
+    Comments
+        .deleteComment(commentID)
+        .then(_ => {
+            return res.status(200).json({});
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when rejecting a comment";
+            return res.status(500).end();
+        })
+});
+
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
     new Promise((resolve, reject) => {
