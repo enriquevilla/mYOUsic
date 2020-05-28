@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const { DBURL, PORT, SECRET_TOKEN } = require("./config");
+const { DBURL, PORT, SECRET_TOKEN, SPOTIFY_KEY } = require("./config");
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const app = express();
@@ -69,7 +69,7 @@ app.get("/validate-token", (req, res) => {
 
 app.get("/genAccessToken", (req, res) => {
     let myHeaders = new fetch.Headers();
-    myHeaders.append("Authorization", "Basic ");
+    myHeaders.append("Authorization", "Basic " + SPOTIFY_KEY);
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     let urlencoded = new URLSearchParams();
