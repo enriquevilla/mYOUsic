@@ -45,7 +45,11 @@ app.get("/favorites", (_, res) => {
 
 app.get("/approveComments", (_, res) => {
     res.sendFile(__dirname + "/public/pages/approveComments.html")
-})
+});
+
+app.get("/followedUserPosts", (_, res) => {
+    res.sendFile(__dirname + "/public/pages/followedUserPosts.html");
+});
 
 app.get("/validate-token", (req, res) => {
     let token = req.headers.sessiontoken;
@@ -455,26 +459,27 @@ app.post("/postsByUserList", jsonParser, (req, res) => {
     const {userList} = req.body;
 
     let postsArray = [];
-
-    async function getAllPostsFromFollowing(id) {
-        await Posts
-            .getPostsByUserID(id)
+    let count = 0;
+    if (userList.length == 1) {
+        count++;
+    }
+    userList.forEach(e=>{
+        Posts
+            .getPostsByUserID(e)
             .then(posts => {
                 posts.forEach(p => {
                     postsArray.push(p);
+                    if (count===posts.length) {
+                        return res.status(200).json(postsArray);
+                    }
+                    count++;
                 })
             })
             .catch(_ => {
                 res.statusMessage = "Something went wrong when getting followed users";
                 return res.status(500).end();
-            });
-    }
-
-    userList.forEach(id => {
-        getAllPostsFromFollowing(id);
-    });
-    
-    return res.status(200).json(postsArray);
+            })
+        });
 });
 
 app.listen(PORT, () => {
