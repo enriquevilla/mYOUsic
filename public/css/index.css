@@ -194,3 +194,9 @@ label[for=Title]
     padding-top: 30px;
 
 }
+
+.letterStyle{
+    color: black !important;
+    font-weight: bold !important;
+    margin-top: 10px;
+}
