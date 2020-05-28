@@ -272,6 +272,9 @@ function checkCommentsToApprove() {
                     }
                 }
             }
+        })
+        .catch(err => {
+            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
         });
 }
 
