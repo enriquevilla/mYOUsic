@@ -136,6 +136,21 @@ body > a[href='/approveComments'] {
     border: 1px #56e39f solid;
 }
 
+@media (max-width: 340px) {
+    .post-result {
+        width: 300px;
+    }
+
+    iframe {
+        width: 260px;
+        height: 70px;
+    }
+
+    .results {
+        padding-bottom: 30px;
+    }
+}
+
 .post-title {
     color: white;
 }
