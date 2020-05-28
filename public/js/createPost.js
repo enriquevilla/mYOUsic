@@ -65,6 +65,9 @@ function fetchSong(title){
                     subButton.classList.add("btn");
                     subButton.classList.add("btn-primary");
                     subButton.innerHTML="This is the song";
+                    subButton.classList.add("greenC");
+                    subButton.classList.add("letterStyle");
+
                     // songMenu.appendChild(formGroup);
                     subButton.setAttribute("onclick","searchSong(window.value)");
                     formGroup.appendChild(subButton);
