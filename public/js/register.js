@@ -1,5 +1,5 @@
 function userRegisterFetch( userName, password ){
-    let url = '/register';
+    let url = 'https://glacial-scrubland-24431.herokuapp.com/register';
 
     let data = {
         userName,
