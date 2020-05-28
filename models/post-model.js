@@ -45,19 +45,6 @@ const Posts = {
                 throw new Error(err.message);
             })
     },
-    getPostsByFollowing: async function(following) {
-        // following = object ids
-        let allResults = [];
-        for (let ObjectId of following) {
-            const postsByUser = await postModel.find({user: ObjectId})
-                                                .then(posts => {return posts})
-                                                .catch(err => {throw new Error(err.message)});
-            for (let post of postsByUser) {
-                allResults += post;
-            }
-        }
-        return allResults;
-    },
     updatePostComments: function(postID, commentID) {
         return postModel
             .updateOne({_id: postID}, {$push: {"comments": commentID}})
@@ -126,6 +113,18 @@ const Posts = {
             .catch(err => {
                 throw new Error(err.message);
             })
+    },
+    getPostsByUserID: function(userID) {
+        return postModel
+            .find({user: userID})
+            .populate("user", "userName")
+            .populate("comments", ["comment", "username", "approved"])
+            .then(posts => {
+                return posts;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })    
     }
 }
 

@@ -393,6 +393,90 @@ app.delete("/rejectComment", jsonParser, (req, res) => {
         })
 });
 
+app.post("/follow", jsonParser, (req, res) => {
+    const {username, userToFollow} = req.body;
+
+    Users
+        .getUserByUserName(userToFollow)
+        .then(user => {
+            Users
+                .followUser(username, user._id)
+                .then(_ => {
+                    return res.status(200).json({});
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong when following a user";
+                    return res.status(500).end();
+                })
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting user by username";
+            return res.status(500).end();
+        });
+});
+
+app.patch("/unfollow", jsonParser, (req, res) => {
+    const {username, userToUnfollow} = req.body;
+
+    Users
+        .getUserByUserName(userToUnfollow)
+        .then(user => {
+            Users
+                .unfollowUser(username, user._id)
+                .then(_ => {
+                    return res.status(204).json({});
+                })
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong when unfollowing user";
+                    return res.status(500).end();
+                })
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting user by username";
+            return res.status(500).end();
+        })
+});
+
+app.get("/following/:username", (req, res) => {
+    const {username} = req.params;
+
+    Users
+        .getFollowingByUsername(username)
+        .then(userJSON => {
+            return res.status(200).json(userJSON.following);
+        })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when getting followed users";
+            return res.status(500).end();
+        })
+});
+
+app.post("/postsByUserList", jsonParser, (req, res) => {
+    const {userList} = req.body;
+
+    let postsArray = [];
+
+    async function getAllPostsFromFollowing(id) {
+        await Posts
+            .getPostsByUserID(id)
+            .then(posts => {
+                posts.forEach(p => {
+                    postsArray.push(p);
+                })
+            })
+            .catch(_ => {
+                res.statusMessage = "Something went wrong when getting followed users";
+                return res.status(500).end();
+            });
+    }
+
+    userList.forEach(id => {
+        getAllPostsFromFollowing(id);
+    });
+    
+    return res.status(200).json(postsArray);
+});
+
 app.listen(PORT, () => {
     console.log("Server running on localhost:8080");
     new Promise((resolve, reject) => {

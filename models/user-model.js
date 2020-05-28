@@ -104,6 +104,37 @@ const Users = {
             .catch(err => {
                 throw new Error(err.message);
             })
+    },
+    followUser: function(username, userToFollowID) {
+        return userModel
+            .updateOne({userName: username}, {$push: {following: userToFollowID}})
+            .then(_ => {
+                return _;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
+    },
+    unfollowUser: function(username, userToUnfollowID) {
+        return userModel
+            .updateOne({userName: username}, {$pull: {following: userToUnfollowID}})
+            .then(_ => {
+                return _;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
+    },
+    getFollowingByUsername: function(username) {
+        return userModel
+            .findOne({userName: username})
+            .populate("following", ["userName"])
+            .then(followed => {
+                return followed;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            });
     }
 }
 

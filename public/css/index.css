@@ -214,3 +214,9 @@ label[for=Title]
     color: black !important;
     font-weight: bold !important;
 }
+
+.follow-button, .unfollow-button {
+    height: 24px;
+    font-size: 9px !important;
+    padding: 5px !important;
+}

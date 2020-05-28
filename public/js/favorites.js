@@ -8,7 +8,7 @@ function addPost(post) {
                 allowtransparency="true" allow="encrypted-media">
             </iframe>
             <p class="post-user">
-                Post by: ${post.user.userName}
+                @${post.user.userName}
             </p>
             <div class="comments${post._id}">
 
