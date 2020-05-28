@@ -55,7 +55,7 @@ app.get("/followedUserPosts", (_, res) => {
     res.sendFile(__dirname + "/public/pages/followedUserPosts.html");
 });
 
-app.get("/api/validate-token", (req, res) => {
+app.get("/validate-token", (req, res) => {
     let token = req.headers.sessiontoken;
     jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
         if (err) {
@@ -68,7 +68,7 @@ app.get("/api/validate-token", (req, res) => {
     });
 });
 
-app.get("/api/genAccessToken", (req, res) => {
+app.get("/genAccessToken", (req, res) => {
     let myHeaders = new fetch.Headers();
     myHeaders.append("Authorization", "Basic " + SPOTIFY_KEY);
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -91,7 +91,7 @@ app.get("/api/genAccessToken", (req, res) => {
         });
 });
 
-app.post('/api/login', jsonParser, (req, res) => {
+app.post('/login', jsonParser, (req, res) => {
     let { userName, password } = req.body;
     if (!userName || !password) {
         res.statusMessage = "Parameter missing in the body of the request.";
@@ -132,7 +132,7 @@ app.post('/api/login', jsonParser, (req, res) => {
 
 })
 
-app.post('/api/register', jsonParser, (req, res) => {
+app.post('/register', jsonParser, (req, res) => {
     let { userName, password } = req.body;
 
     if (!userName || !password) {
@@ -163,7 +163,7 @@ app.post('/api/register', jsonParser, (req, res) => {
 });
 
 
-app.post('/api/posts', jsonParser, (req, res) => {
+app.post('/posts', jsonParser, (req, res) => {
     const {description, song, username} = req.body;
 
     if (!song || !description || !username) {
@@ -196,7 +196,7 @@ app.post('/api/posts', jsonParser, (req, res) => {
         })
   });
 
-app.get("/api/allPosts", (_, res) => {
+app.get("/allPosts", (_, res) => {
     Posts
         .getAllPosts()
         .then(posts => {
@@ -208,7 +208,7 @@ app.get("/api/allPosts", (_, res) => {
         })
 });
 
-app.post("/api/addComment", jsonParser, (req, res) => {
+app.post("/addComment", jsonParser, (req, res) => {
     const {postID, comment, username} = req.body;
 
     if (!postID || !comment || !username) {
@@ -253,7 +253,7 @@ app.post("/api/addComment", jsonParser, (req, res) => {
 
 });
 
-app.post("/api/addFavorite", jsonParser, (req, res) => {
+app.post("/addFavorite", jsonParser, (req, res) => {
     const {postId, username} = req.body;
    
     if (!postId || !username) {
@@ -272,7 +272,7 @@ app.post("/api/addFavorite", jsonParser, (req, res) => {
         });
 });
 
-app.post("/api/removeFavorite", jsonParser, (req, res) => {
+app.post("/removeFavorite", jsonParser, (req, res) => {
     const {username, postId} = req.body;
 
     Users
@@ -286,7 +286,7 @@ app.post("/api/removeFavorite", jsonParser, (req, res) => {
         })
 });
 
-app.get("/api/favorites/:username", (req, res) => {
+app.get("/favorites/:username", (req, res) => {
     const {username} = req.params;
 
     Users
@@ -300,7 +300,7 @@ app.get("/api/favorites/:username", (req, res) => {
         })
 })
 
-app.get("/api/posts/:username", (req, res) => {
+app.get("/posts/:username", (req, res) => {
     const {username} = req.params;
 
     Users
@@ -322,7 +322,7 @@ app.get("/api/posts/:username", (req, res) => {
         });
 });
 
-app.delete("/api/deleteOwnPosts", jsonParser, (req, res)=>{
+app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
     const {postId} = req.body;
 
     if (!postId) {
@@ -340,7 +340,7 @@ app.delete("/api/deleteOwnPosts", jsonParser, (req, res)=>{
         });
 });
 
-app.get("/api/favposts/:username", (req, res) => {
+app.get("/favposts/:username", (req, res) => {
     const {username} = req.params;
 
     Users
@@ -354,7 +354,7 @@ app.get("/api/favposts/:username", (req, res) => {
         })
 });
 
-app.patch("/api/approveComment", jsonParser, (req, res) => {
+app.patch("/approveComment", jsonParser, (req, res) => {
     const {commentID} = req.body;
 
     Comments
@@ -382,7 +382,7 @@ app.delete("/rejectComment", jsonParser, (req, res) => {
         })
 });
 
-app.post("/api/follow", jsonParser, (req, res) => {
+app.post("/follow", jsonParser, (req, res) => {
     const {username, userToFollow} = req.body;
 
     Users
@@ -404,7 +404,7 @@ app.post("/api/follow", jsonParser, (req, res) => {
         });
 });
 
-app.patch("/api/unfollow", jsonParser, (req, res) => {
+app.patch("/unfollow", jsonParser, (req, res) => {
     const {username, userToUnfollow} = req.body;
 
     Users
@@ -426,7 +426,7 @@ app.patch("/api/unfollow", jsonParser, (req, res) => {
         })
 });
 
-app.get("/api/following/:username", (req, res) => {
+app.get("/following/:username", (req, res) => {
     const {username} = req.params;
 
     Users
@@ -440,7 +440,7 @@ app.get("/api/following/:username", (req, res) => {
         })
 });
 
-app.get("/api/getPostsFromFollowed/:username", (req, res) => {
+app.get("/getPostsFromFollowed/:username", (req, res) => {
     const {username} = req.params;
 
     Users
