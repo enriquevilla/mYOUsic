@@ -248,7 +248,7 @@ function loadMyPosts() {
 }
 
 function checkCommentsToApprove() {
-    fetch(`/commentsToApprove/${localStorage.getItem("userName")}`)
+    fetch(`/allPosts`)
         .then(response => {
             if (response.ok) {
                 return response.json()

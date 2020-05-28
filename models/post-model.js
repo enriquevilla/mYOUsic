@@ -102,11 +102,12 @@ const Posts = {
             })
     },
     getPostsByUserList: function(userList) {
+        console.log(userList);
         return postModel
             .find()
             .populate({
                 path: 'user',
-                match: {_id: {$in: userList }},
+                match: {_id: {$in: userList}},
             })
             .populate("comments", ["comment", "username", "approved"])
             .then(posts => {

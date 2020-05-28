@@ -14,6 +14,9 @@ const jsonParser = bodyParser.json();
 
 app.use(express.static("public"));
 
+const cors = require("./middleware/cors");
+app.use(cors);
+
 // Application routing
 app.get("/", (_, res) => {
     res.sendFile(__dirname + "/public/index.html");

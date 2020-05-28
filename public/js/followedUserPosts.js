@@ -307,6 +307,9 @@ function loadFollowedUserPosts() {
                     }
                 })
                 .then(posts => {
+                    posts = posts.filter(i => {
+                        return i.user;
+                    });
                     // reverse to get newer posts first
                     posts = posts.reverse();
                     console.log(posts);
