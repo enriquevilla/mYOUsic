@@ -32,6 +32,9 @@ function addCommentsToApprove(post) {
                         <button type="button" class="btn btn-primary approve-comment-button">
                             Approve
                         </button>
+                        <button type="button" class="btn btn-danger reject-comment-button">
+                            Reject
+                        </button>
                     </span>
                 </p>
             `
@@ -48,11 +51,9 @@ function addCommentsToApprove(post) {
 function addEventListenerToButtons() {
     document.querySelector(".comments-to-approve").addEventListener("click", (e) => {
         if (e.target.matches(".approve-comment-button")) {
-            console.log("hola");
             const data = {
                 commentID: e.target.parentNode.parentNode.className.substr(1)
             }
-            console.log(data);
             const settings = {
                 method: 'PATCH',
                 headers: {
@@ -61,6 +62,30 @@ function addEventListenerToButtons() {
                 body: JSON.stringify(data)
             }
             fetch("/approveComment", settings)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        document.querySelector(".results").innerHTML = `
+                            <div>
+                                ${response.statusText}
+                            </div>
+                        `
+                    }
+                })
+        }
+        if (e.target.matches(".reject-comment-button")) {
+            const data = {
+                commentID: e.target.parentNode.parentNode.className.substr(1)
+            }
+            const settings = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+            fetch("/rejectComment", settings)
                 .then(response => {
                     if (response.ok) {
                         window.location.reload();

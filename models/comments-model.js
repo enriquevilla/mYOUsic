@@ -37,6 +37,16 @@ const Comments = {
             .catch(err => {
                 throw new Error(err.message);
             })
+    },
+    deleteComment: function(commentID) {
+        return commentModel
+            .deleteOne({_id: commentID})
+            .then(_ => {
+                return _;
+            })
+            .catch(err => {
+                throw new Error(err.message);
+            })
     }
 }
 
