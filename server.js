@@ -131,7 +131,7 @@ app.post('/login', jsonParser, (req, res) => {
 
 })
 
-app.post('/register', jsonParser, (req, res) => {
+app.post('/registerUser', jsonParser, (req, res) => {
     let { userName, password } = req.body;
 
     if (!userName || !password) {

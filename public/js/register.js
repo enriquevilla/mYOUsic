@@ -1,5 +1,5 @@
 function userRegisterFetch( userName, password ){
-    let url = '/register';
+    let url = '/registerUser';
 
     let data = {
         userName,
