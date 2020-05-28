@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { DBURL, PORT, SECRET_TOKEN, SPOTIFY_KEY } = require("./config");
@@ -12,10 +13,17 @@ const fetch = require("node-fetch");
 
 const jsonParser = bodyParser.json();
 
-app.use(express.static(__dirname + "public"));
+app.use(express.static("public"));
 
 const cors = require("./middleware/cors");
 app.use(cors);
+
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static('client/build'));
+}
+app.get('*',(req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+});
 
 // Application routing
 app.get("/", (_, res) => {
