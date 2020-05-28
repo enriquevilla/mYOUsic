@@ -49,56 +49,60 @@ function addCommentsToApprove(post) {
 }
 
 function addEventListenerToButtons() {
-    document.querySelector(".comments-to-approve").addEventListener("click", (e) => {
-        if (e.target.matches(".approve-comment-button")) {
-            const data = {
-                commentID: e.target.parentNode.parentNode.className.substr(1)
-            }
-            const settings = {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-            fetch("/approveComment", settings)
-                .then(response => {
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        document.querySelector(".results").innerHTML = `
-                            <div>
-                                ${response.statusText}
-                            </div>
-                        `
+    if (document.querySelectorAll(".comments-to-approve").length > 0) {
+        document.querySelectorAll(".comments-to-approve").forEach(i => {
+            i.addEventListener("click", (e) => {
+                if (e.target.matches(".approve-comment-button")) {
+                    const data = {
+                        commentID: e.target.parentNode.parentNode.className.substr(1)
                     }
-                })
-        }
-        if (e.target.matches(".reject-comment-button")) {
-            const data = {
-                commentID: e.target.parentNode.parentNode.className.substr(1)
-            }
-            const settings = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-            fetch("/rejectComment", settings)
-                .then(response => {
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        document.querySelector(".results").innerHTML = `
-                            <div>
-                                ${response.statusText}
-                            </div>
-                        `
+                    const settings = {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
                     }
-                })
-        }
-    })
+                    fetch("/approveComment", settings)
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                document.querySelector(".results").innerHTML = `
+                                    <div>
+                                        ${response.statusText}
+                                    </div>
+                                `
+                            }
+                        })
+                }
+                if (e.target.matches(".reject-comment-button")) {
+                    const data = {
+                        commentID: e.target.parentNode.parentNode.className.substr(1)
+                    }
+                    const settings = {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    }
+                    fetch("/rejectComment", settings)
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                document.querySelector(".results").innerHTML = `
+                                    <div>
+                                        ${response.statusText}
+                                    </div>
+                                `
+                            }
+                        })
+                }
+            });
+        })
+    }
 }
 
 function loadCommentsToApprove() {
@@ -114,19 +118,21 @@ function loadCommentsToApprove() {
             const newerPosts = posts.reverse();
             const filteredPosts = newerPosts.filter(i => {
                 return localStorage.getItem("userName") === i.user.userName;
-            })
+            });
+            let approveExists = false;
             for (let p of filteredPosts) {
                 let approvedArray = [];
                 for (let c of p.comments) {
                     approvedArray.push(c.approved);
                 }
-                if (approvedArray.length === 0) {
-                    throw new Error("No comments to approve");
-                }
                 if (approvedArray.includes(false)) {
                     addPost(p);
                     addCommentsToApprove(p);
+                    approveExists = true;
                 }
+            }
+            if (!approveExists) {
+                throw new Error("No comments to approve");
             }
             addEventListenerToButtons();
         })
