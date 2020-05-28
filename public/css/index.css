@@ -121,10 +121,10 @@ body > a[href='/approveComments'] {
     height: 47px;
 }
 
-.approve-button > p {
+.approve-button > img {
     position: absolute;
-    left: 8px;
-    top: 5px;
+    left: 9px;
+    top: 9px;
 }
 
 .post-result {
