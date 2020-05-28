@@ -130,9 +130,7 @@ function addDeleteButtonEventListener(i) {
         if (e.target.matches(".deleteButton")) {
             e.preventDefault();
             const postId = e.target.parentElement.id;
-            const username = localStorage.getItem("userName");
             const data = {
-                username: username,
                 postId: postId
             }
             const settings = {
@@ -360,7 +358,7 @@ function getAllPosts() {
 }
 
 function checkCommentsToApprove() {
-    fetch(`/commentsToApprove/${localStorage.getItem("userName")}`)
+    fetch(`/allPosts`)
         .then(response => {
             if (response.ok) {
                 return response.json()

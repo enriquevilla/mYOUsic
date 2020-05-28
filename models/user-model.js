@@ -45,6 +45,7 @@ const Users = {
     getUserByUserName: function( userName ){
         return userModel
             .findOne( { userName } )
+            .populate("following", "_id")
             .then( user => {
                 return user;
             })

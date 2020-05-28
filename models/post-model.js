@@ -78,11 +78,10 @@ const Posts = {
                 throw new Error(err.message);
             });
     },
-    deleteOwnPosts: function(userId, postId){
+    deleteOwnPosts: function(postId){
         return postModel
             .findOneAndDelete({_id:postId})
             .then(removed=>{
-                console.log("result", removed);
                 if(removed==null){
                     throw new Error();
                 }
@@ -102,22 +101,13 @@ const Posts = {
                 throw new Error(err.message);
             })
     },
-    getPostsByUsername: function(username) {
+    getPostsByUserList: function(userList) {
         return postModel
             .find()
-            .populate("user", "userName")
-            .populate("comments", ["comment", "username", "approved"])
-            .then(posts => {
-                return posts;
+            .populate({
+                path: 'user',
+                match: {_id: {$in: userList }},
             })
-            .catch(err => {
-                throw new Error(err.message);
-            })
-    },
-    getPostsByUserID: function(userID) {
-        return postModel
-            .find({user: userID})
-            .populate("user", "userName")
             .populate("comments", ["comment", "username", "approved"])
             .then(posts => {
                 return posts;

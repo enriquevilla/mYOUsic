@@ -319,26 +319,21 @@ app.get("/posts/:username", (req, res) => {
 });
 
 app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
-    const {postId, username} = req.body;
-    console.log("Delete: " + postId);
-    console.log("From: " + username);
-    if (!postId || !username) {
+    const {postId} = req.body;
+
+    if (!postId) {
         res.statusMessage = "Field or fields missing in request body";
         return res.status(406).end();
     }
-    Users
-        .getUserByUserName(username)
-        .then(userJson => {
-            Posts
-                .deleteOwnPosts(userJson._id,postId)
-                .then(deleted => {
-                    return res.status(200).json(deleted);
-                })
-                .catch(_ => {
-                    res.statusMessage = "Something went wrong when deleting post";
-                    return res.status(500).end();
-                });
+    Posts
+        .deleteOwnPosts(postId)
+        .then(deleted => {
+            return res.status(200).json(deleted);
         })
+        .catch(_ => {
+            res.statusMessage = "Something went wrong when deleting post";
+            return res.status(500).end();
+        });
 });
 
 app.get("/favposts/:username", (req, res) => {
@@ -353,20 +348,6 @@ app.get("/favposts/:username", (req, res) => {
             res.statusMessage = "Something went wrong when getting favorite posts";
             return res.status(500).end();
         })
-});
-
-app.get("/commentsToApprove/:username", (req, res) => {
-    const {username} = req.params;
-
-    Posts
-        .getPostsByUsername(username)
-        .then(posts => {
-            return res.status(200).json(posts);
-        })
-        .catch(_ => {
-            res.statusMessage = "Something went wrong when getting posts by username";
-            return res.status(500).end();
-        });
 });
 
 app.patch("/approveComment", jsonParser, (req, res) => {
@@ -455,31 +436,26 @@ app.get("/following/:username", (req, res) => {
         })
 });
 
-app.post("/postsByUserList", jsonParser, (req, res) => {
-    const {userList} = req.body;
+app.get("/getPostsFromFollowed/:username", (req, res) => {
+    const {username} = req.params;
 
-    let postsArray = [];
-    let count = 0;
-    if (userList.length == 1) {
-        count++;
-    }
-    userList.forEach(e=>{
-        Posts
-            .getPostsByUserID(e)
-            .then(posts => {
-                posts.forEach(p => {
-                    postsArray.push(p);
-                    if (count===posts.length) {
-                        return res.status(200).json(postsArray);
-                    }
-                    count++;
+    Users
+        .getUserByUserName(username)
+        .then(userJSON => {
+            const following = userJSON.following.map(i => {
+                return i._id;
+            })
+            Posts
+                .getPostsByUserList(following)
+                .then(posts => {
+                    return res.status(200).json(posts);
                 })
-            })
-            .catch(_ => {
-                res.statusMessage = "Something went wrong when getting followed users";
-                return res.status(500).end();
-            })
-        });
+                .catch(_ => {
+                    res.statusMessage = "Something went wrong when getting followed users posts";
+                    return res.status(500).end();
+                })
+        })
+
 });
 
 app.listen(PORT, () => {

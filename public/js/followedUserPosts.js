@@ -298,21 +298,7 @@ function loadFollowedUserPosts() {
             if (followed.length === 0) {
                 throw new Error("You are not following any profiles");
             }
-            const userList = followed.map(i => {
-                return i._id;
-            });
-            const data = {
-                userList: userList,
-            }
-            const settings = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            };
-            console.log(data);
-            fetch("/postsByUserList", settings)
+            fetch(`/getPostsFromFollowed/${localStorage.getItem("userName")}`)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
