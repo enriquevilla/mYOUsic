@@ -8,7 +8,7 @@ function addPost(post) {
                 allowtransparency="true" allow="encrypted-media">
             </iframe>
             <p class="post-user">
-                Post by: ${post.user.userName}
+                @${post.user.userName}
             </p>
             <div class="comments${post._id}">
 
@@ -200,6 +200,95 @@ function addCommentEventListener(i) {
     });
 }
 
+function addFollowButton(i, userList) {
+    const userText = i.innerText.split(" ")[0].substr(1);
+    if (i.innerHTML.trim() !== `@${localStorage.getItem("userName")}`) {
+        if (userList.includes(userText)) {
+            i.innerHTML += `
+                <span>
+                    <button type="button" class="btn unfollow-button greenC letterStyle">
+                        Unfollow
+                    </button>
+                </span>
+            `;
+            i.querySelector(".unfollow-button").addEventListener("click", (e) => {
+                e.preventDefault();
+                let url = '/unfollow';
+                
+                const userText = e.target.parentNode.parentNode.innerText.split(" ")[0].substr(1);
+
+                let data = {
+                    username: localStorage.getItem("userName"),
+                    userToUnfollow: userText
+                }
+
+                console.log(data);
+
+                let settings = {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }
+
+                let results = document.querySelector('.results');
+
+                fetch(url, settings)
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            throw new Error(response.statusText);
+                        }
+                    })
+                    .catch(err => {
+                        results.innerHTML = `<div> ${err.message} </div>`;
+                    });
+            });
+        } else {
+            i.innerHTML += `
+                <span>
+                    <button type="button" class="btn follow-button greenC letterStyle">
+                        Follow
+                    </button>
+                </span>
+            `;
+            i.querySelector(".follow-button").addEventListener("click", (e) => {
+                e.preventDefault();
+                let url = '/follow';
+    
+                let data = {
+                    username: localStorage.getItem("userName"),
+                    userToFollow: userText
+                }
+    
+                let settings = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }
+    
+                let results = document.querySelector('.results');
+    
+                fetch(url, settings)
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            throw new Error(response.statusText);
+                        }
+                    })
+                    .catch(err => {
+                        results.innerHTML = `<div> ${err.message} </div>`;
+                    });
+            });
+        }
+    }
+}
+
 function getAllPosts() {
     fetch("/allPosts")
         .then(response => {
@@ -246,6 +335,24 @@ function getAllPosts() {
             document.querySelectorAll("form").forEach(i => {
                 addCommentEventListener(i);
             })
+
+            fetch(`/following/${localStorage.getItem("userName")}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(response.statusText);
+                    }
+                })
+                .then(followed => {
+                    const followedUsernames = followed.map(i => {
+                        return i.userName;
+                    });
+                    document.querySelectorAll(".post-user").forEach(i => {
+                        addFollowButton(i, followedUsernames);
+                    });
+                });
+
         })
         .catch(err => {
             document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
