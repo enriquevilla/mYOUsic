@@ -1,6 +1,15 @@
-const mongoose = require("mongoose");
+import { Document, Schema, model } from "mongoose";
 
-const userSchema = mongoose.Schema({
+export interface IUser {
+    userName: string;
+    password: string;
+    following?: Schema.Types.ObjectId[];
+    favorites?: Schema.Types.ObjectId[];
+}
+
+export interface IUserModel extends IUser, Document {}
+
+const userSchema = new Schema<IUser>({
     userName : {
         type : String,
         required : true
@@ -10,81 +19,81 @@ const userSchema = mongoose.Schema({
         required: true
     },
     following: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "users"
     }],
     favorites: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "posts"
     }]
 });
 
-const userModel = mongoose.model("users", userSchema);
+const userModel = model("users", userSchema);
 
-const Users = {
-    createUser : function( newUser ){
+export const Users = {
+    createUser: function(newUser: IUser){
         return userModel
             .find({userName: newUser.userName})
-            .then(r => {
-                if (r.length > 0) {
+            .then((res: string[]) => {
+                if (res.length > 0) {
                     throw new Error("Username already taken.");
                 } else {
-                    return userModel.create( newUser )
-                        .then( user => {
+                    return userModel.create(newUser)
+                        .then((user: IUser) => {
                             return user;
                         })
-                        .catch(err => {
+                        .catch((err: Error) => {
                             throw new Error(err.message)
                         })
                 }
             })
-            .catch( err => {
-                throw new Error( err.message );
+            .catch((err: Error) => {
+                throw new Error(err.message);
             }); 
     },
-    getUserByUserName: function( userName ){
+    getUserByUserName: function(userName: string){
         return userModel
-            .findOne( { userName } )
+            .findOne({ userName })
             .populate("following", "_id")
-            .then( user => {
+            .then((user: any) => {
                 return user;
             })
-            .catch( err => {
+            .catch((err: Error) => {
                 throw new Error( err.message );
             }); 
     },
-    createFavorite: function(username, postId){
+    createFavorite: function(username: string, postId: string){
         return userModel
             .updateOne({userName: username}, {$push: {"favorites": postId}})
-            .then(_ => {
+            .then(() => {
                 console.log(postId);
-                return _
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             });
     },
-    removeFavorite: function(username, postID) {
+    removeFavorite: function(username: string, postID: string) {
         return userModel
             .updateOne({userName: username}, {$pull: {favorites: postID}})
-            .then(_ => {
-                return _;
+            .then(() => {
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    removeFavoritesFromAll: function(postID) {
+    removeFavoritesFromAll: function(postID: string) {
         return userModel
             .updateMany({}, {$pull: {favorites: postID}})
-            .then(_ => {
-                return _;
+            .then(() => {
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    getFavoritesByUsername: function(username) {
+    getFavoritesByUsername: function(username: string) {
         return userModel
             .findOne({userName: username})
             .populate({
@@ -99,46 +108,42 @@ const Users = {
                   path: 'comments'
                 }
             })
-            .then(user => {
+            .then((user: any) => {
                 return user;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    followUser: function(username, userToFollowID) {
+    followUser: function(username: string, userToFollowID: string) {
         return userModel
             .updateOne({userName: username}, {$push: {following: userToFollowID}})
-            .then(_ => {
-                return _;
+            .then(() => {
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    unfollowUser: function(username, userToUnfollowID) {
+    unfollowUser: function(username: string, userToUnfollowID: string) {
         return userModel
             .updateOne({userName: username}, {$pull: {following: userToUnfollowID}})
-            .then(_ => {
-                return _;
+            .then(() => {
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    getFollowingByUsername: function(username) {
+    getFollowingByUsername: function(username: string) {
         return userModel
             .findOne({userName: username})
             .populate("following", ["userName"])
-            .then(followed => {
+            .then((followed: any) => {
                 return followed;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             });
     }
 }
-
-module.exports = {
-    Users
-};

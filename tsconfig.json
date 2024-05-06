@@ -1,0 +1,12 @@
+{
+    "extends": "@tsconfig/node20/tsconfig.json",
+    "include": ["./", "./public/**/*"],
+    "exclude": ["node_modules", "./dist"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "#/*": ["./*"]
+        },
+        "outDir": "build"
+    }
+}
