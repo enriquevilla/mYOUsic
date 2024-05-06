@@ -1,6 +1,6 @@
-# Web Applications Development Final Project
+# mYOUsic
 
-## Full stack web application 
+<!-- ## Full stack web application  -->
 
 <!-- <p>
     Technologies used: MongoDB, Express, Node, Bootstrap
