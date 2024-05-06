@@ -1,10 +1,12 @@
 import { Document, Schema, model } from "mongoose";
+import { ICommentModel } from "#/models/comments-model";
+import { IUserModel } from "#/models/user-model";
 
 export interface IPost {
     song: string,
-    user: string,
+    user: IUserModel,
     description: string,
-    comments?: string[]
+    comments?: ICommentModel[],
 }
 
 export interface IPostModel extends IPost, Document {};
@@ -56,7 +58,7 @@ export const Posts = {
     },
     updatePostComments: function(postID: string, commentID: string) {
         return postModel
-            .updateOne({_id: postID}, {$push: {"comments": commentID}})
+            .updateOne({ _id: postID }, {$push: {"comments": commentID}})
             .then(() => {
                 return this.getPostAfterUpdate(postID)
             })
@@ -66,7 +68,7 @@ export const Posts = {
     },
     getPostAfterUpdate: function(postID: string) {
         return postModel
-            .findOne({_id: postID})
+            .findOne({ _id: postID })
             .populate("comments", ["comment", "username", "approved"])
             .then((post: any) => {
                 return post;
@@ -75,9 +77,9 @@ export const Posts = {
                 throw new Error(err.message);
             });
     },
-    getPostsByUserID: function(userId: string) {
+    getPostsByUserID: function(userId: IUserModel) {
         return postModel
-            .find({user: userId})
+            .find({ user: userId })
             .populate("comments", ["comment", "username", "approved"])
             .populate("user", ["userName"])
             .then((users: any) =>{

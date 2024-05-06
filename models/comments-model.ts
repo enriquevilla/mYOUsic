@@ -1,9 +1,9 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface IComment {
-    comment: string;
-    username: string;
-    approved: boolean
+    comment: string,
+    username: string,
+    approved: boolean,
 }
 
 export interface ICommentModel extends IComment, Document {}

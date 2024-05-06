@@ -1,10 +1,11 @@
 import { Document, Schema, model } from "mongoose";
+import { IPostModel } from "#/models/post-model";
 
 export interface IUser {
-    userName: string;
-    password: string;
-    following?: Schema.Types.ObjectId[];
-    favorites?: Schema.Types.ObjectId[];
+    userName: string,
+    password: string,
+    following?: IUserModel[],
+    favorites?: IPostModel[],
 }
 
 export interface IUserModel extends IUser, Document {}
