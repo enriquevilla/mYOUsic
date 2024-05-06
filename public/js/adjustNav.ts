@@ -1,6 +1,8 @@
 if (localStorage.getItem("token")) {
-    document.querySelector(".login-active").remove();
-
+    const loginActive = document.querySelector(".login-active");
+    if (loginActive) {
+        loginActive.remove();
+    }
 
     const logOutLi = document.createElement("li");
     logOutLi.classList.add("nav-item");
@@ -16,6 +18,9 @@ if (localStorage.getItem("token")) {
     });
     const scriptTag = document.querySelector('script[src="./js/adjustNav.js"]') 
                         || document.querySelector('script[src="../js/adjustNav.js"]');
+    if (!scriptTag) {
+        throw new Error("Script tag not found");
+    }
     scriptTag.before(logOutLi);
 
 
@@ -30,10 +35,13 @@ if (localStorage.getItem("token")) {
     myProfileLi.addEventListener("click", () => {
         window.location.href = "/myProfile";
     });
-    document.querySelector(".index-active").after(myProfileLi);
-    if (window.location.pathname === "/myProfile") {
-        document.querySelector(".index-active").classList.remove("index-active");
-        myProfileLi.classList.add("index-active");
+    const indexActive = document.querySelector(".index-active");
+    if (indexActive) {
+        indexActive.after(myProfileLi);
+        if (window.location.pathname === "/myProfile") {
+            indexActive.classList.remove("index-active");
+            myProfileLi.classList.add("index-active");
+        }
     }
 
     const favoritesLi = document.createElement("li");
@@ -49,7 +57,9 @@ if (localStorage.getItem("token")) {
     });
     myProfileLi.after(favoritesLi);
     if (window.location.pathname === "/favorites") {
-        document.querySelector(".index-active").classList.remove("index-active");
+        if (indexActive) {
+            indexActive.classList.remove("index-active");
+        }
         favoritesLi.classList.add("index-active");
     }
 
@@ -66,16 +76,16 @@ if (localStorage.getItem("token")) {
     });
     favoritesLi.after(followingLi);
 
-    if (window.location.pathname === "/followedUserPosts") {
-        document.querySelector(".index-active").classList.remove("index-active");
+    if (indexActive && window.location.pathname === "/followedUserPosts") {
+        indexActive.classList.remove("index-active");
         followingLi.classList.add("index-active");
     }
 
-    if (window.location.pathname === "/approveComments") {
-        document.querySelector(".index-active").classList.remove("index-active");
+    if (indexActive && window.location.pathname === "/approveComments") {
+        indexActive.classList.remove("index-active");
     }
 
-    if (window.location.pathname === "/createPost") {
-        document.querySelector(".index-active").classList.remove("index-active");
+    if (indexActive && window.location.pathname === "/createPost") {
+        indexActive.classList.remove("index-active");
     }
 }

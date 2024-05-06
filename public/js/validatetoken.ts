@@ -1,17 +1,18 @@
-let url = '/validate-token';
-let settings = {
+const url = '/validate-token';
+const settings = {
     method: 'GET',
     headers: {
-        sessiontoken : localStorage.getItem('token')
+        sessiontoken: localStorage.getItem('token') || ""
     }
 }
 
-fetch( url, settings )
-    .then( response => {
-        if ( response.ok ){
+fetch(url, settings)
+    .then(response => {
+        if (response.ok) {
             return response.json();
+        } else {
+            throw new Error( response.statusText );
         }
-        throw new Error( response.statusText );
     })
     .then(responseJSON => {
         localStorage.setItem("userName",`${responseJSON.userName}`);
@@ -21,6 +22,6 @@ fetch( url, settings )
         //     addButton.setAttribute("style", "display: initial");
         // }
     })
-    .catch( err => {
-        window.location.href="/login";
+    .catch(err => {
+        window.location.href = "/login";
     });
