@@ -2,11 +2,11 @@
 
 ## Full stack web application 
 
-<p>
+<!-- <p>
     Technologies used: MongoDB, Express, Node, Bootstrap
 </p>
 <p>
-    Languages used: HTML, CSS and Vanilla Javascript
+    Languages used: HTML, CSS and TypeScript
 </p>
 
 <p>
@@ -19,8 +19,8 @@
     <li>
         Diego Alberto Partida González A01195444
     </li>
-</ul>
+</ul> -->
 
-<a href="https://myousicapp.herokuapp.com/">
+<a href="https://myousicapp.onrender.com/">
     Click to go to the app
 </a>
