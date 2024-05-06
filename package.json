@@ -2,10 +2,10 @@
   "name": "mYOUsic",
   "version": "1.0.0",
   "description": "Music sharing social media platform",
-  "main": "server.js",
+  "main": "build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "tsc && node build/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,13 +16,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.14",
     "node-fetch": "^2.6.0",
-    "typescript": "^5.4.5"
-  },
-  "devDependencies": {
-    "@tsconfig/node20": "^20.1.4",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/node-fetch": "^2.6.11"
+    "nodemon": "^2.0.4"
   }
 }
