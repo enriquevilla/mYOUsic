@@ -1,5 +1,8 @@
-function addPost(post) {
-    document.querySelector(".results").innerHTML += `
+import { IPostModel } from "#/models/post-model";
+
+function addPost(post: IPostModel) {
+    const results = <HTMLElement> document.querySelector(".results");
+    results.innerHTML += `
         <div class="post-result" id="post${post._id}">
             <h3 class="post-title">
                 ${post.description}
@@ -14,18 +17,19 @@ function addPost(post) {
     `;
 }
 
-function addCommentsToApprove(post) {
-    const unapprovedComments = post.comments.filter(i => {
+function addCommentsToApprove(post: IPostModel) {
+    const unapprovedComments = post.comments?.filter(i => {
         return !i.approved;
-    });
+    }) || [];
     if (unapprovedComments.length > 0) {
-        document.querySelector(`.comments${post._id}`).innerHTML += `
+        const comments = <HTMLElement> document.querySelector(`.comments${post._id}`);
+        comments.innerHTML += `
             <p>
                 Comments to approve:
             </p>
         `;
         for (let c of unapprovedComments) {
-            document.querySelector(`.comments${post._id}`).innerHTML += `
+            comments.innerHTML += `
                 <p class="c${c._id}">
                     ${c.username}: ${c.comment}
                     <span>
@@ -40,21 +44,17 @@ function addCommentsToApprove(post) {
             `
         }
     }
-    document.querySelector(`#post${post._id}`).innerHTML += `
-        <form id="${post._id}">
-            <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
-                aria-label="Comment">
-        </form>
-    `;
 }
 
 function addEventListenerToButtons() {
     if (document.querySelectorAll(".comments-to-approve").length > 0) {
+        const results = <HTMLElement> document.querySelector(".results");
         document.querySelectorAll(".comments-to-approve").forEach(i => {
             i.addEventListener("click", (e) => {
-                if (e.target.matches(".approve-comment-button")) {
+                const target = <HTMLButtonElement> e.target
+                if (target.matches(".approve-comment-button")) {
                     const data = {
-                        commentID: e.target.parentNode.parentNode.className.substr(1)
+                        commentID: target.parentElement?.parentElement?.className.substr(1)
                     }
                     const settings = {
                         method: 'PATCH',
@@ -68,7 +68,7 @@ function addEventListenerToButtons() {
                             if (response.ok) {
                                 window.location.reload();
                             } else {
-                                document.querySelector(".results").innerHTML = `
+                                results.innerHTML = `
                                     <div>
                                         ${response.statusText}
                                     </div>
@@ -76,9 +76,9 @@ function addEventListenerToButtons() {
                             }
                         })
                 }
-                if (e.target.matches(".reject-comment-button")) {
+                if (target.matches(".reject-comment-button")) {
                     const data = {
-                        commentID: e.target.parentNode.parentNode.className.substr(1)
+                        commentID: target.parentElement?.parentElement?.className.substr(1)
                     }
                     const settings = {
                         method: 'DELETE',
@@ -92,7 +92,7 @@ function addEventListenerToButtons() {
                             if (response.ok) {
                                 window.location.reload();
                             } else {
-                                document.querySelector(".results").innerHTML = `
+                                results.innerHTML = `
                                     <div>
                                         ${response.statusText}
                                     </div>
@@ -114,21 +114,23 @@ function loadCommentsToApprove() {
                 throw new Error(response.statusText);
             }
         })
-        .then(posts => {
+        .then((posts: IPostModel[]) => {
             const newerPosts = posts.reverse();
-            const filteredPosts = newerPosts.filter(i => {
-                return localStorage.getItem("userName") === i.user.userName;
+            const filteredPosts = newerPosts.filter(post => {
+                return localStorage.getItem("userName") === post.user.userName;
             });
             let approveExists = false;
             for (let p of filteredPosts) {
                 let approvedArray = [];
-                for (let c of p.comments) {
-                    approvedArray.push(c.approved);
-                }
-                if (approvedArray.includes(false)) {
-                    addPost(p);
-                    addCommentsToApprove(p);
-                    approveExists = true;
+                if (p.comments) {
+                    for (let c of p.comments) {
+                        approvedArray.push(c.approved);
+                    }
+                    if (approvedArray.includes(false)) {
+                        addPost(p);
+                        addCommentsToApprove(p);
+                        approveExists = true;
+                    }
                 }
             }
             if (!approveExists) {
@@ -137,7 +139,8 @@ function loadCommentsToApprove() {
             addEventListenerToButtons();
         })
         .catch(err => {
-            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
+            const results = <HTMLElement> document.querySelector(".results");
+            results.innerHTML = `<div> ${err.message} </div>`;
         });
 }
 

@@ -1,5 +1,9 @@
-function addPost(post) {
-    document.querySelector(".results").innerHTML += `
+import { IPostModel } from "#/models/post-model";
+import { IUserModel } from "#/models/user-model";
+
+function addPost(post: IPostModel) {
+    const results = <HTMLElement> document.querySelector(".results");
+    results.innerHTML += `
         <div class="post-result" id="post${post._id}">
             <h3 class="post-title">
                 ${post.description}
@@ -17,25 +21,27 @@ function addPost(post) {
     `;
 }
 
-function addComments(post) {
-    const approvedComments = post.comments.filter(i => {
+function addComments(post: IPostModel) {
+    const approvedComments = post.comments?.filter(i => {
         return i.approved;
-    });
+    }) || [];
     if (approvedComments.length > 0) {
-        document.querySelector(`.comments${post._id}`).innerHTML += `
+        const comments = <HTMLElement> document.querySelector(`.comments${post._id}`);
+        comments.innerHTML += `
             <p>
                 Comments:
             </p>
         `;
         for (let c of approvedComments) {
-            document.querySelector(`.comments${post._id}`).innerHTML += `
+            comments.innerHTML += `
                 <p>
                     ${c.username}: ${c.comment}
                 </p>
             `
         }
     }
-    document.querySelector(`#post${post._id}`).innerHTML += `
+    const posts = <HTMLElement> document.querySelector(`#post${post._id}`); 
+    posts.innerHTML += `
         <form id="${post._id}">
             <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
                 aria-label="Comment">
@@ -43,7 +49,7 @@ function addComments(post) {
     `;
 }
 
-function addDeleteButton(post) {
+function addDeleteButton(post: IPostModel) {
     const username = localStorage.getItem("userName");
     if (post.user.userName === username || username === "admin") {
         const delButton = document.createElement("button");
@@ -52,19 +58,22 @@ function addDeleteButton(post) {
         delButton.classList.add("btn-danger");
         delButton.classList.add("deleteButton");
         delButton.setAttribute("type", "button");
-        document.querySelector(`#post${post._id} > form`).append(delButton);
+        const form = <HTMLFormElement> document.querySelector(`#post${post._id} > form`);
+        form.append(delButton);
     }
 }
 
-function addRemoveFavoriteButton(i) {
-    i.innerHTML += `
+function addRemoveFavoriteButton(form: HTMLFormElement) {
+    form.innerHTML += `
         <button type="button" class="btn favButton greenC letterStyle">
             Remove from favorites
         </button>
     `;
-    i.querySelector(`.favButton`).addEventListener("click", (e) => {
+    const favButton = <HTMLButtonElement> form.querySelector(`.favButton`);
+    favButton.addEventListener("click", (e) => {
         e.preventDefault();
-        const postId = e.target.parentElement.id;
+        const target = <HTMLButtonElement> e.target;
+        const postId = target.parentElement?.id;
         const username = localStorage.getItem("userName");
         const data = {
             username: username,
@@ -77,6 +86,7 @@ function addRemoveFavoriteButton(i) {
             },
             body: JSON.stringify(data)
         };
+        console.log(data);
         fetch("/removeFavorite", settings)
             .then(response => {
                 if (response.ok) {
@@ -88,15 +98,17 @@ function addRemoveFavoriteButton(i) {
     });
 }
 
-function addFavoriteButton(i) {
-    i.innerHTML += `
+function addFavoriteButton(form: HTMLFormElement) {
+    form.innerHTML += `
         <button type="button" class="btn favButton greenC letterStyle">
             Add to favorites
         </button>
     `;
-    i.querySelector(`.favButton`).addEventListener("click", (e) => {
+    const favButton = <HTMLButtonElement> form.querySelector(`.favButton`);
+    favButton.addEventListener("click", (e) => {
         e.preventDefault();
-        const postId = e.target.parentElement.id;
+        const target = <HTMLButtonElement> e.target;
+        const postId = target.parentElement?.id;
         const username = localStorage.getItem("userName");
         const data = {
             username: username,
@@ -109,6 +121,7 @@ function addFavoriteButton(i) {
             },
             body: JSON.stringify(data)
         };
+        console.log(data);
         fetch("/addFavorite", settings)
             .then(response => {
                 if (response.ok) {
@@ -123,14 +136,13 @@ function addFavoriteButton(i) {
     });
 }
 
-function addDeleteButtonEventListener(i) {
-    i.addEventListener("click", (e) => {
-        if (e.target.matches(".deleteButton")) {
+function addDeleteButtonEventListener(form: HTMLFormElement) {
+    form.addEventListener("click", (e) => {
+        const target = <HTMLButtonElement> e.target;
+        if (target.matches(".deleteButton")) {
             e.preventDefault();
-            const postId = e.target.parentElement.id;
-            const username = localStorage.getItem("userName");
+            const postId = target.parentElement?.id;
             const data = {
-                username: username,
                 postId: postId
             }
             const settings = {
@@ -153,13 +165,15 @@ function addDeleteButtonEventListener(i) {
     });
 }
 
-function addCommentEventListener(i) {
-    i.addEventListener("submit", (e) => {
+function addCommentEventListener(form: HTMLFormElement) {
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const comment = e.target.querySelector("input").value;
+        const target = <HTMLFormElement> e.target;
+        const input = <HTMLInputElement> target.querySelector("input");
+        const comment = input.value;
         const username = localStorage.getItem("userName");
-        const postID = e.target.id;
-        e.target.querySelector("input").value = "";
+        const postID = target.id;
+        input.value = "";
         const data = {
             comment: comment,
             username: username,
@@ -185,40 +199,44 @@ function addCommentEventListener(i) {
                 if (comment.approved) {
                     window.location.reload();
                 } else {
-                    document.querySelector(`.comments${e.target.id}`).innerHTML += `
+                    const comments = <HTMLElement> document.querySelector(`.comments${target.id}`);
+                    comments.innerHTML += `
                         <p>
                             Your comment is awaiting approval
                         </p>
                     `
                     setTimeout(() => {
-                        document.querySelector(`.comments${e.target.id}`).lastElementChild.remove();
+                        comments.lastElementChild?.remove();
                     }, 3000);
                 }
             })
     });
 }
 
-function addFollowButton(i, userList) {
-    const userText = i.innerText.split(" ")[0].substr(1);
-    if (i.innerHTML.trim() !== `@${localStorage.getItem("userName")}`) {
+function addFollowButton(post: HTMLElement, userList: string[]) {
+    const userText = post.innerText.split(" ")[0].substr(1);
+    if (post.innerHTML.trim() !== `@${localStorage.getItem("userName")}`) {
         if (userList.includes(userText)) {
-            i.innerHTML += `
+            post.innerHTML += `
                 <span>
                     <button type="button" class="btn unfollow-button greenC letterStyle">
                         Unfollow
                     </button>
                 </span>
             `;
-            i.querySelector(".unfollow-button").addEventListener("click", (e) => {
+            const unfollowButton = <HTMLButtonElement> post.querySelector(".unfollow-button");
+            unfollowButton.addEventListener("click", (e) => {
                 e.preventDefault();
                 let url = '/unfollow';
-                
-                const userText = e.target.parentNode.parentNode.innerText.split(" ")[0].substr(1);
+                const target = <HTMLButtonElement> e.target;
+                const userText = target.parentElement?.parentElement?.innerText.split(" ")[0].substr(1);
 
                 let data = {
                     username: localStorage.getItem("userName"),
                     userToUnfollow: userText
                 }
+
+                console.log(data);
 
                 let settings = {
                     method: 'PATCH',
@@ -228,7 +246,7 @@ function addFollowButton(i, userList) {
                     body: JSON.stringify(data)
                 }
 
-                let results = document.querySelector('.results');
+                const results = <HTMLElement> document.querySelector('.results');
 
                 fetch(url, settings)
                     .then(response => {
@@ -243,14 +261,15 @@ function addFollowButton(i, userList) {
                     });
             });
         } else {
-            i.innerHTML += `
+            post.innerHTML += `
                 <span>
                     <button type="button" class="btn follow-button greenC letterStyle">
                         Follow
                     </button>
                 </span>
             `;
-            i.querySelector(".follow-button").addEventListener("click", (e) => {
+            const followButton = <HTMLButtonElement> post.querySelector(".follow-button");
+            followButton.addEventListener("click", (e) => {
                 e.preventDefault();
                 let url = '/follow';
     
@@ -267,7 +286,7 @@ function addFollowButton(i, userList) {
                     body: JSON.stringify(data)
                 }
     
-                let results = document.querySelector('.results');
+                const results = <HTMLElement> document.querySelector('.results');
     
                 fetch(url, settings)
                     .then(response => {
@@ -285,8 +304,8 @@ function addFollowButton(i, userList) {
     }
 }
 
-function loadFollowedUserPosts() {
-    fetch(`/following/${localStorage.getItem("userName")}`)
+function getAllPosts() {
+    fetch("/allPosts")
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -294,11 +313,19 @@ function loadFollowedUserPosts() {
                 throw new Error(response.statusText);
             }
         })
-        .then(followed => {
-            if (followed.length === 0) {
-                throw new Error("You are not following any profiles");
+        .then(posts => {
+            if (posts.length === 0) {
+                throw new Error("No one has made any posts yet :(");
             }
-            fetch(`/getPostsFromFollowed/${localStorage.getItem("userName")}`)
+            // reverse to get newer posts first
+            posts = posts.reverse();
+            console.log(posts);
+            for (let post of posts) {
+                addPost(post);
+                addComments(post);
+                addDeleteButton(post);
+            }
+            fetch(`/favorites/${localStorage.getItem("userName")}`)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -306,73 +333,79 @@ function loadFollowedUserPosts() {
                         throw new Error(response.statusText);
                     }
                 })
-                .then(posts => {
-                    posts = posts.filter(i => {
-                        return i.user;
-                    });
-                    // reverse to get newer posts first
-                    posts = posts.reverse();
-                    console.log(posts);
-                    for (let post of posts) {
-                        addPost(post);
-                        addComments(post);
-                        addDeleteButton(post);
-                    }
-                    fetch(`/favorites/${localStorage.getItem("userName")}`)
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error(response.statusText);
-                            }
-                        })
-                        .then(favorites => {
-                            document.querySelectorAll("form").forEach(i => {
-                                if (favorites.includes(i.id)) {
-                                    addRemoveFavoriteButton(i);
-                                } else {
-                                    addFavoriteButton(i);
-                                }
-                            })
-                        })
-
-                    document.querySelectorAll("form").forEach(i => {
-                        addDeleteButtonEventListener(i);
-                    });
-
-                    document.querySelectorAll("form").forEach(i => {
-                        addCommentEventListener(i);
+                .then(favorites => {
+                    document.querySelectorAll("form").forEach(form => {
+                        if (favorites.includes(form.id)) {
+                            addRemoveFavoriteButton(form);
+                        } else {
+                            addFavoriteButton(form);
+                        }
                     })
+                })
 
-                    fetch(`/following/${localStorage.getItem("userName")}`)
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error(response.statusText);
-                            }
-                        })
-                        .then(followed => {
-                            const followedUsernames = followed.map(i => {
-                                return i.userName;
-                            });
-                            document.querySelectorAll(".post-user").forEach(i => {
-                                addFollowButton(i, followedUsernames);
-                            });
-                        });
+            document.querySelectorAll("form").forEach(form => {
+                addDeleteButtonEventListener(form);
+            });
+
+            document.querySelectorAll("form").forEach(form => {
+                addCommentEventListener(form);
+            })
+
+            fetch(`/following/${localStorage.getItem("userName")}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(response.statusText);
+                    }
                 })
-                .catch(err => {
-                    document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
-                })
+                .then(followed => {
+                    const followedUsernames = followed.map((user: IUserModel) => {
+                        return user.userName;
+                    });
+                    document.querySelectorAll(".post-user").forEach((post) => {
+                        addFollowButton(<HTMLElement> post, followedUsernames);
+                    });
+                });
+
         })
         .catch(err => {
-            document.querySelector(".results").innerHTML = `<div> ${err.message} </div>`;
+            const results = <HTMLElement> document.querySelector(".results");
+            results.innerHTML = `<div> ${err.message} </div>`;
         })
+}
 
+function checkCommentsToApprove() {
+    fetch(`/allPosts`)
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error(response.statusText);
+            }
+        })
+        .then(posts => {
+            const filteredPosts = posts.filter((post: IPostModel) => {
+                return localStorage.getItem("userName") === post.user.userName;
+            })
+            for (let p of filteredPosts) {
+                for (let c of p.comments) {
+                    if (!c.approved) {
+                        const anchor = <HTMLAnchorElement> document.querySelector("body > a[href='/approveComments']");
+                        anchor.style.display = "initial";
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            const results = <HTMLElement> document.querySelector(".results");
+            results.innerHTML = `<div> ${err.message} </div>`;
+        });
 }
 
 function init() {
-    loadFollowedUserPosts();
+    getAllPosts();
+    checkCommentsToApprove();
 }
 
 init();

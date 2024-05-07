@@ -1,6 +1,14 @@
-const mongoose = require("mongoose");
+import { Document, Schema, model } from "mongoose";
 
-const commentSchema = mongoose.Schema({
+export interface IComment {
+    comment: string,
+    username: string,
+    approved: boolean,
+}
+
+export interface ICommentModel extends IComment, Document {}
+
+const commentSchema = new Schema({
     comment: {
         type: String,
         required: true
@@ -15,41 +23,37 @@ const commentSchema = mongoose.Schema({
     }
 });
 
-const commentModel = mongoose.model('comments', commentSchema);
+const commentModel = model('comments', commentSchema);
 
-const Comments = {
-    createComment : function(newComment) {
+export const Comments = {
+    createComment: function(newComment: IComment) {
         return commentModel
             .create(newComment)
             .then(comment => {
                 return comment;
             })
-            .catch( err => {
+            .catch(err => {
                 throw new Error(err.message);
             }); 
     },
-    approveComment: function(commentID) {
+    approveComment: function(commentID: string) {
         return commentModel
             .updateOne({_id: commentID}, {$set: {approved: true}})
-            .then(_ => {
-                return _;
+            .then(() => {
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    deleteComment: function(commentID) {
+    deleteComment: function(commentID: string) {
         return commentModel
             .deleteOne({_id: commentID})
-            .then(_ => {
-                return _;
+            .then(() => {
+                return;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     }
 }
-
-module.exports = {
-    Comments
-};

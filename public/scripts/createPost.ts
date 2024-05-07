@@ -1,4 +1,6 @@
-function fetchSong(title){
+import { SearchContent } from "spotify-types";
+
+function fetchSong(title: string) {
     fetch("/genAccessToken")
         .then(response => {
             return response.json();
@@ -13,7 +15,6 @@ function fetchSong(title){
                     Authorization : `Bearer ${API_TOKEN}`
                 }
             }
-            let results = document.querySelector('.results');
             fetch( url, settings )
                 .then( response => {
                     if( response.ok ){
@@ -24,10 +25,10 @@ function fetchSong(title){
                     }
                     throw new Error( response.statusText );
                 })
-                .then( responseJson => {
-                    window.value=responseJson;  
+                .then((responseJson: SearchContent) => {
+                    // window.value = responseJson;
+                    const results = <HTMLElement> document.querySelector('.results');
                     results.innerHTML = "";
-                    document.querySelector(".results").innerHTML = "";
                     // responseJson.tracks.items.forEach(element => {
                     //     document.querySelector(".results").innerHTML += `
                     //         <div>
@@ -54,11 +55,13 @@ function fetchSong(title){
                     selectGroup.id="controlSelect";
                     formGroup.appendChild(selectGroup);
 
-                    responseJson.tracks.items.forEach(element => {
-                        const optionGroup = document.createElement("option");
-                        optionGroup.innerHTML=element.name +"          |            " +element.artists[0].name;
-                        selectGroup.appendChild(optionGroup);
-                    });
+                    if (responseJson.tracks) {
+                        responseJson.tracks.items.forEach(element => {
+                            const optionGroup = document.createElement("option");
+                            optionGroup.innerHTML = element.name + "          |            " + element.artists[0].name;
+                            selectGroup.appendChild(optionGroup);
+                        });
+                    }
 
                     const subButton = document.createElement("button");
                     subButton.setAttribute("type","button");
@@ -69,11 +72,14 @@ function fetchSong(title){
                     subButton.classList.add("letterStyle");
 
                     // songMenu.appendChild(formGroup);
-                    subButton.setAttribute("onclick","searchSong(window.value)");
+                    subButton.addEventListener("click", () => {
+                        searchSong(responseJson);
+                    })
                     formGroup.appendChild(subButton);
-                    document.querySelector(".results").appendChild(formGroup);
-                    let SongForm = document.querySelector( '.songForm' );
-                    let selectedIndex = document.getElementById("controlSelect").selectedIndex;
+                    results.appendChild(formGroup);
+                    const songForm = <HTMLFormElement> document.querySelector(".songForm");
+                    const controlSelect = <HTMLSelectElement> document.getElementById("controlSelect");
+                    const selectedIndex = controlSelect.selectedIndex;
                     // SongForm.addEventListener( 'submit' , ( event ) => {
                     //     event.preventDefault();
                     //     var songId = responseJson.tracks.items[selectedIndex].uri;
@@ -90,54 +96,58 @@ function fetchSong(title){
                         throw new Error(err.message);
                     })
         })
-        .catch( err => {
+        .catch(err => {
+            const results = <HTMLElement> document.querySelector('.results');
             results.innerHTML = `<div> ${err.message} </div>`;
         });
-    
 }
 
-function searchSong(responseJson){
-    let SongForm = document.querySelector( '.songForm' );
-    let selectedIndex = document.getElementById("controlSelect").selectedIndex;
-    var songId = responseJson.tracks.items[selectedIndex].uri;
-    var newsongId = songId.replace('spotify:track:','');
-    console.log(newsongId);
-    let results = document.querySelector( '.results' );
-    results.innerHTML = "";
-    results.innerHTML+= `
-    <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
-allowtransparency="true" allow="encrypted-media"></iframe>
-    `;
-    let description = document.getElementById( 'Description' ).value;
-    addpostFech(newsongId,description);
+function searchSong(responseJson: SearchContent){
+    let SongForm = <HTMLFormElement> document.querySelector( '.songForm' );
+    const controlSelect = <HTMLSelectElement> document.getElementById("controlSelect");
+    if (controlSelect) {
+        const selectedIndex = controlSelect.selectedIndex;
+        if (responseJson.tracks) {
+            let songId = responseJson.tracks.items[selectedIndex].uri;
+            let newsongId = songId.replace('spotify:track:','');
+            console.log(newsongId);
+            let results = <HTMLElement> document.querySelector('.results');
+            results.innerHTML = "";
+            results.innerHTML += `
+            <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
+        allowtransparency="true" allow="encrypted-media"></iframe>
+            `;
+            const descEl = <HTMLInputElement> document.getElementById('Description');
+            const description = descEl.value;
+            addPostFetch(newsongId, description);
+        }
+    }
 }
 
 function watchPostForm(){
-    let PostForm = document.querySelector( '.Post-form' );
+    const postForm = <HTMLFormElement> document.querySelector('.Post-form');
 
-    PostForm.addEventListener( 'submit' , ( event ) => {
-        console.log("hola2");
+    postForm.addEventListener( 'submit' , ( event ) => {
         event.preventDefault();
-        console.log("hola2");
-        let description = document.getElementById( 'Description' ).value;
-        let title = document.getElementById( 'Title' ).value;
-
+        const descEl = <HTMLInputElement> document.getElementById('Description');
+        const titleEl = <HTMLInputElement> document.getElementById('Title');
+        const description = descEl.value;
+        const title = titleEl.value;
         fetchSong(title);
-    })
+    });
 }
 
 
 
 
-function addpostFech( songId, description){
-
-    let data = {
+function addPostFetch(songId: string, description: string) {
+    const data = {
         song : songId,
         description: description,
         username : localStorage.getItem("userName")
     }
 
-    let settings = {
+    const settings = {
         method : 'POST',
         headers : {
             'Content-Type': 'application/json'
@@ -145,7 +155,8 @@ function addpostFech( songId, description){
         body : JSON.stringify( data )
     }
 
-    let results = document.querySelector( '.results' );
+    const results = <HTMLElement> document.querySelector('.results');
+
     results.innerHTML = "";
     fetch( "/posts", settings )
         .then( response => {

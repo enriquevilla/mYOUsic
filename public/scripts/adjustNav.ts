@@ -1,6 +1,6 @@
 if (localStorage.getItem("token")) {
-    document.querySelector(".login-active").remove();
-
+    const loginActive = <HTMLElement> document.querySelector(".login-active");
+    loginActive.remove();
 
     const logOutLi = document.createElement("li");
     logOutLi.classList.add("nav-item");
@@ -14,10 +14,8 @@ if (localStorage.getItem("token")) {
         localStorage.clear();
         window.location.href = "/login";
     });
-    const scriptTag = document.querySelector('script[src="./js/adjustNav.js"]') 
-                        || document.querySelector('script[src="../js/adjustNav.js"]');
+    const scriptTag = <HTMLScriptElement> document.querySelector('script[src*="adjustNav.js"]');
     scriptTag.before(logOutLi);
-
 
     const myProfileLi = document.createElement("li");
     myProfileLi.classList.add("nav-item");
@@ -30,9 +28,10 @@ if (localStorage.getItem("token")) {
     myProfileLi.addEventListener("click", () => {
         window.location.href = "/myProfile";
     });
-    document.querySelector(".index-active").after(myProfileLi);
+    const indexActive = <HTMLElement> document.querySelector(".index-active");
+    indexActive.after(myProfileLi);
     if (window.location.pathname === "/myProfile") {
-        document.querySelector(".index-active").classList.remove("index-active");
+        indexActive.classList.remove("index-active");
         myProfileLi.classList.add("index-active");
     }
 
@@ -49,7 +48,7 @@ if (localStorage.getItem("token")) {
     });
     myProfileLi.after(favoritesLi);
     if (window.location.pathname === "/favorites") {
-        document.querySelector(".index-active").classList.remove("index-active");
+        indexActive.classList.remove("index-active");
         favoritesLi.classList.add("index-active");
     }
 
@@ -67,15 +66,15 @@ if (localStorage.getItem("token")) {
     favoritesLi.after(followingLi);
 
     if (window.location.pathname === "/followedUserPosts") {
-        document.querySelector(".index-active").classList.remove("index-active");
+        indexActive.classList.remove("index-active");
         followingLi.classList.add("index-active");
     }
 
     if (window.location.pathname === "/approveComments") {
-        document.querySelector(".index-active").classList.remove("index-active");
+        indexActive.classList.remove("index-active");
     }
 
     if (window.location.pathname === "/createPost") {
-        document.querySelector(".index-active").classList.remove("index-active");
+        indexActive.classList.remove("index-active");
     }
 }

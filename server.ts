@@ -1,21 +1,24 @@
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const { DBURL, PORT, SECRET_TOKEN, SPOTIFY_KEY } = require("./config");
-const bcrypt = require('bcryptjs');
-const jsonwebtoken = require('jsonwebtoken');
-const app = express();
-const { Users } = require('./models/user-model');
-const { Posts } = require('./models/post-model');
-const { Comments } = require("./models/comments-model");
-const fetch = require("node-fetch");
+import express from "express";
+import bodyParser from "body-parser";
+import { connect, disconnect } from "mongoose";
+import bcrypt from "bcryptjs";
+import jsonwebtoken from "jsonwebtoken";
+import { Headers, RequestInit, HeadersInit, BodyInit } from "node-fetch";
+import fetch from "node-fetch";
 
+import { DBURL, PORT, SECRET_TOKEN, SPOTIFY_KEY, PRODUCTION_MODE } from "#/config";
+import { Users, IUser, IUserModel } from "#/models/user-model";
+import { IPost, Posts } from '#/models/post-model';
+import { Comments } from "#/models/comments-model";
+
+const app = express();
 const jsonParser = bodyParser.json();
 
-app.use(express.static("public"));
+const root = PRODUCTION_MODE ? "dist/public" : "public";
 
-const cors = require("./middleware/cors");
+app.use(express.static(root));
+
+import { cors } from "#/middleware/cors";
 app.use(cors);
 
 // Application routing
@@ -56,27 +59,29 @@ app.get("/followedUserPosts", (_, res) => {
 });
 
 app.get("/validate-token", (req, res) => {
-    let token = req.headers.sessiontoken;
+    const token = <string> req.headers.sessiontoken;
     jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
         if (err) {
             res.statusMessage = "Your session expired";
             return res.status(409).end();
+        } else if (decoded) {
+            const { userName } = decoded as IUser;
+            return res.status(200).json({
+                userName: userName
+            });
         }
-        return res.status(200).json({
-            userName: decoded.userName
-        });
     });
 });
 
 app.get("/genAccessToken", (req, res) => {
-    let myHeaders = new fetch.Headers();
+    const myHeaders = new Headers();
     myHeaders.append("Authorization", "Basic " + SPOTIFY_KEY);
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-    let urlencoded = new URLSearchParams();
+    const urlencoded = new URLSearchParams();
     urlencoded.append("grant_type", "client_credentials");
 
-    let requestOptions = {
+    const requestOptions: RequestInit = {
         method: 'POST',
         headers: myHeaders,
         body: urlencoded,
@@ -100,7 +105,7 @@ app.post('/login', jsonParser, (req, res) => {
 
     Users
         .getUserByUserName(userName)
-        .then(user => {
+        .then((user: IUser) => {
             bcrypt.compare(password, user.password)
                 .then(result => {
                     if (result) {
@@ -120,12 +125,12 @@ app.post('/login', jsonParser, (req, res) => {
                         return res.status(409).end();
                     }
                 })
-                .catch(err => {
+                .catch((err: Error) => {
                     res.statusMessage = err.message;
                     return res.status(400).end();
                 });
         })
-        .catch(err => {
+        .catch((err: Error) => {
             res.statusMessage = "User not found";
             return res.status(400).end();
         });
@@ -141,17 +146,17 @@ app.post('/register', jsonParser, (req, res) => {
     }
     bcrypt.hash(password, 10)
         .then(hashedPassword => {
-            const newUser = {
+            const newUser: IUser = {
                 userName,
                 password: hashedPassword
             };
 
             Users
                 .createUser(newUser)
-                .then(result => {
+                .then((result: IUser) => {
                     return res.status(201).json(result);
                 })
-                .catch(err => {
+                .catch((err: Error) => {
                     res.statusMessage = err.message;
                     return res.status(400).end();
                 });
@@ -173,7 +178,7 @@ app.post('/posts', jsonParser, (req, res) => {
 
     Users
         .getUserByUserName(username)
-        .then(userJSON => {
+        .then((userJSON: IUserModel) => {
             const newPost = {
                 description: description,
                 song : song,
@@ -185,12 +190,12 @@ app.post('/posts', jsonParser, (req, res) => {
                     console.log("New Post", newPost);
                     return res.status(201).json(post);
                 })
-                .catch(_ => {
+                .catch((err: Error) => {
                     res.statusMessage = "Something went wrong";
                     return res.status(500).end();
                 });
         })
-        .catch(_ => {
+        .catch((err: Error) => {
             res.statusMessage = "Something went wrong";
             return res.status(500).end();
         })
@@ -199,10 +204,10 @@ app.post('/posts', jsonParser, (req, res) => {
 app.get("/allPosts", (_, res) => {
     Posts
         .getAllPosts()
-        .then(posts => {
+        .then((posts: IPost) => {
             return res.status(200).json(posts);
         })
-        .catch(_ => {
+        .catch((err: Error) => {
             res.statusMessage = "Something went wrong";
             return res.status(500).end();
         })
@@ -224,10 +229,10 @@ app.post("/addComment", jsonParser, (req, res) => {
 
     Users
         .getUserByUserName(username)
-        .then(user => {
+        .then((user: IUserModel) => {
             Posts
                 .getPostByID(postID)
-                .then(post => {
+                .then((post: IPost) => {
                     if (String(post.user) === String(user._id)) {
                         newComment.approved = true;
                     }
@@ -236,15 +241,15 @@ app.post("/addComment", jsonParser, (req, res) => {
                         .then(comment => {
                             Posts
                                 .updatePostComments(postID, comment._id)
-                                .then(updatedPost => {
+                                .then((updatedPost: IPost) => {
                                     return res.status(201).json(updatedPost.comments);
                                 })
-                                .catch(_ => {
+                                .catch(() => {
                                     res.statusMessage = "Something went wrong when updating post comments";
                                     return res.status(500).end();
                                 });
                         })
-                        .catch(_ => {
+                        .catch(() => {
                             res.statusMessage = "Something went wrong when adding comment.";
                             return res.status(500).end();
                         })
@@ -263,10 +268,10 @@ app.post("/addFavorite", jsonParser, (req, res) => {
 
     Users
         .createFavorite(username, postId)
-        .then(favJSON => {
+        .then((favJSON: any) => {
             return res.status(200).json(favJSON);
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when creating favorite";
             return res.status(500).end();
         });
@@ -277,24 +282,24 @@ app.post("/removeFavorite", jsonParser, (req, res) => {
 
     Users
         .removeFavorite(username, postId)
-        .then(_ => {
+        .then(() => {
             return res.status(204).json({});
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when removing a favorite";
             return res.status(500).end();
         })
 });
 
 app.get("/favorites/:username", (req, res) => {
-    const {username} = req.params;
+    const { username } = req.params;
 
     Users
         .getUserByUserName(username)
-        .then(user => {
+        .then((user: IUser) => {
             return res.status(200).json(user.favorites);
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when getting favorites by user";
             return res.status(500).end();
         })
@@ -305,25 +310,25 @@ app.get("/posts/:username", (req, res) => {
 
     Users
         .getUserByUserName(username)
-        .then(userJSON => {
+        .then((userJSON: IUserModel) => {
             Posts
                 .getPostsByUserID(userJSON._id)
-                .then(posts => {
+                .then((posts: IPost[]) => {
                     return res.status(200).json(posts);
                 })
-                .catch(_ => {
+                .catch(() => {
                     res.statusMessage = "Something went wrong getting posts by own ID";
                     return res.status(500).end();
                 });
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when getting user by username";
             return res.status(500).end();
         });
 });
 
 app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
-    const {postId} = req.body;
+    const { postId } = req.body;
 
     if (!postId) {
         res.statusMessage = "Field or fields missing in request body";
@@ -331,24 +336,24 @@ app.delete("/deleteOwnPosts", jsonParser, (req, res)=>{
     }
     Posts
         .deleteOwnPosts(postId)
-        .then(deleted => {
+        .then((deleted: any) => {
             return res.status(200).json(deleted);
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when deleting post";
             return res.status(500).end();
         });
 });
 
 app.get("/favposts/:username", (req, res) => {
-    const {username} = req.params;
+    const { username } = req.params;
 
     Users
         .getFavoritesByUsername(username)
-        .then(userJSON => {
+        .then((userJSON: IUser) => {
             return res.status(200).json(userJSON.favorites);
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when getting favorite posts";
             return res.status(500).end();
         })
@@ -359,10 +364,10 @@ app.patch("/approveComment", jsonParser, (req, res) => {
 
     Comments
         .approveComment(commentID)
-        .then(_ => {
+        .then(() => {
             return res.status(204).json({})
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when approving a comment";
             return res.status(500).end();
         })
@@ -373,10 +378,10 @@ app.delete("/rejectComment", jsonParser, (req, res) => {
 
     Comments
         .deleteComment(commentID)
-        .then(_ => {
+        .then(() => {
             return res.status(200).json({});
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when rejecting a comment";
             return res.status(500).end();
         })
@@ -387,18 +392,18 @@ app.post("/follow", jsonParser, (req, res) => {
 
     Users
         .getUserByUserName(userToFollow)
-        .then(user => {
+        .then((user: IUserModel) => {
             Users
                 .followUser(username, user._id)
-                .then(_ => {
+                .then(() => {
                     return res.status(200).json({});
                 })
-                .catch(_ => {
+                .catch(() => {
                     res.statusMessage = "Something went wrong when following a user";
                     return res.status(500).end();
                 })
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when getting user by username";
             return res.status(500).end();
         });
@@ -409,18 +414,18 @@ app.patch("/unfollow", jsonParser, (req, res) => {
 
     Users
         .getUserByUserName(userToUnfollow)
-        .then(user => {
+        .then((user: IUserModel) => {
             Users
                 .unfollowUser(username, user._id)
-                .then(_ => {
+                .then(() => {
                     return res.status(204).json({});
                 })
-                .catch(_ => {
+                .catch(() => {
                     res.statusMessage = "Something went wrong when unfollowing user";
                     return res.status(500).end();
                 })
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when getting user by username";
             return res.status(500).end();
         })
@@ -431,10 +436,10 @@ app.get("/following/:username", (req, res) => {
 
     Users
         .getFollowingByUsername(username)
-        .then(userJSON => {
+        .then((userJSON: IUser) => {
             return res.status(200).json(userJSON.following);
         })
-        .catch(_ => {
+        .catch(() => {
             res.statusMessage = "Something went wrong when getting followed users";
             return res.status(500).end();
         })
@@ -445,36 +450,40 @@ app.get("/getPostsFromFollowed/:username", (req, res) => {
 
     Users
         .getUserByUserName(username)
-        .then(userJSON => {
-            const following = userJSON.following.map(i => {
-                return i._id;
-            })
-            Posts
-                .getPostsByUserList(following)
-                .then(posts => {
-                    return res.status(200).json(posts);
+        .then((userJSON: any) => {
+            if (userJSON.following) {
+                const following = userJSON.following.map((user: any) => {
+                    return user._id;
                 })
-                .catch(_ => {
-                    res.statusMessage = "Something went wrong when getting followed users posts";
-                    return res.status(500).end();
-                })
+                Posts
+                    .getPostsByUserList(following)
+                    .then((posts: any) => {
+                        return res.status(200).json(posts);
+                    })
+                    .catch(() => {
+                        res.statusMessage = "Something went wrong when getting followed users posts";
+                        return res.status(500).end();
+                    })
+            } 
         })
 });
 
 app.listen(PORT, () => {
-    console.log("Server running on localhost:8080");
+    console.log(`Server running on localhost:${PORT}`);
     new Promise((resolve, reject) => {
-        mongoose.connect(DBURL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, (err) => {
+        connect(DBURL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, (err) => {
             if (err) {
                 reject(err);
             } else {
                 console.log("Connected to db successfully");
-                return resolve();
+                return resolve(200);
             }
         });
     })
-        .catch(err => {
-            mongoose.disconnect();
-            console.log(err);
-        });
+    .catch(err => {
+        disconnect();
+        console.log(err);
+    });
 });
+
+export { Users };

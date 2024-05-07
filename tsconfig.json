@@ -1,0 +1,13 @@
+{
+    "extends": "@tsconfig/node20/tsconfig.json",
+    "include": ["./"],
+    "exclude": ["node_modules", "dist"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "#/*": ["./*"]
+        },
+        "outDir": "dist",
+        "lib": ["ES2023", "DOM"],
+    }
+}

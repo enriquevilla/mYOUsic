@@ -1,12 +1,23 @@
-const mongoose = require("mongoose");
+import { Document, Schema, model } from "mongoose";
+import { ICommentModel } from "#/models/comments-model";
+import { IUserModel } from "#/models/user-model";
 
-const postSchema = mongoose.Schema({
+export interface IPost {
+    song: string,
+    user: IUserModel,
+    description: string,
+    comments?: ICommentModel[],
+}
+
+export interface IPostModel extends IPost, Document {};
+
+const postSchema = new Schema<IPost>({
     song: {
         type: String,
         required: true
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'users',
         required: true
     },
@@ -15,15 +26,15 @@ const postSchema = mongoose.Schema({
         required: true
     },
     comments: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "comments",
     }]
 });
 
-const postModel = mongoose.model("posts", postSchema);
+const postModel = model("posts", postSchema);
 
-const Posts = {
-    createPost : function(newPost){
+export const Posts = {
+    createPost: function(newPost: IPost){
         return postModel
             .create(newPost)
             .then( post => {
@@ -38,70 +49,70 @@ const Posts = {
             .find()
             .populate("user", "userName")
             .populate("comments", ["comment", "username", "approved"])
-            .then(posts => {
+            .then((posts: IPost) => {
                 return posts;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    updatePostComments: function(postID, commentID) {
+    updatePostComments: function(postID: string, commentID: string) {
         return postModel
-            .updateOne({_id: postID}, {$push: {"comments": commentID}})
-            .then(_ => {
+            .updateOne({ _id: postID }, {$push: {"comments": commentID}})
+            .then(() => {
                 return this.getPostAfterUpdate(postID)
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    getPostAfterUpdate: function(postID) {
+    getPostAfterUpdate: function(postID: string) {
         return postModel
-            .findOne({_id: postID})
+            .findOne({ _id: postID })
             .populate("comments", ["comment", "username", "approved"])
-            .then(post => {
+            .then((post: any) => {
                 return post;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             });
     },
-    getPostsByUserID: function(userId){
+    getPostsByUserID: function(userId: IUserModel) {
         return postModel
-            .find({user: userId})
+            .find({ user: userId })
             .populate("comments", ["comment", "username", "approved"])
             .populate("user", ["userName"])
-            .then(users =>{
+            .then((users: any) =>{
                 return users;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             });
     },
-    deleteOwnPosts: function(postId){
+    deleteOwnPosts: function(postId: string) {
         return postModel
-            .findOneAndDelete({_id:postId})
-            .then(removed=>{
-                if(removed==null){
+            .findOneAndDelete({ _id: postId })
+            .then((removed: IPost) => {
+                if (removed == null) {
                     throw new Error();
                 }
                 return "Deleted";
             })
-            .catch( err => {
-                throw new Error( err );
+            .catch((err: Error) => {
+                throw new Error(err.message);
             });
     },
-    getPostByID: function(postID) {
+    getPostByID: function(postID: string) {
         return postModel
             .findOne({_id: postID})
-            .then(post => {
+            .then((post: any) => {
                 return post;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })
     },
-    getPostsByUserList: function(userList) {
+    getPostsByUserList: function(userList: any) {
         console.log(userList);
         return postModel
             .find()
@@ -110,15 +121,11 @@ const Posts = {
                 match: {_id: {$in: userList}},
             })
             .populate("comments", ["comment", "username", "approved"])
-            .then(posts => {
+            .then((posts: any) => {
                 return posts;
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 throw new Error(err.message);
             })    
     }
-}
-
-module.exports = {
-    Posts
 }

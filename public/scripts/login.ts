@@ -1,12 +1,12 @@
-function userLoginFetch( userName, password ){
-    let url = '/login';
+function userLoginFetch(userName: string, password: string) {
+    const url = '/login';
 
-    let data = {
+    const data = {
         userName,
         password
     }
 
-    let settings = {
+    const settings = {
         method : 'POST',
         headers : {
             'Content-Type' : 'application/json'
@@ -14,7 +14,7 @@ function userLoginFetch( userName, password ){
         body : JSON.stringify( data )
     }
 
-    let results = document.querySelector( '.results' );
+    const results = <HTMLElement> document.querySelector('.results');
 
     fetch( url, settings )
         .then( response => {
@@ -34,15 +34,20 @@ function userLoginFetch( userName, password ){
 }
 
 function watchLoginForm(){
-    let loginForm = document.querySelector( '.login-form' );
+    const loginForm = <HTMLFormElement> document.querySelector('.login-form');
 
+    if (!loginForm) {
+        return;
+    }
     loginForm.addEventListener( 'submit' , ( event ) => {
         event.preventDefault();
-        let userName = document.getElementById( 'userName' ).value;
-        let password = document.getElementById( 'userPassword' ).value;
+        const usernameField = <HTMLInputElement> document.querySelector('#userName');
+        const passwordField = <HTMLInputElement> document.querySelector('#userPassword');
+        const username = usernameField.value;
+        const password = passwordField.value;
 
-        userLoginFetch( userName, password );
-    })
+        userLoginFetch(username, password);
+    });
 }
 
 function init(){
