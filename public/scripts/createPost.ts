@@ -72,14 +72,14 @@ function fetchSong(title: string) {
                     subButton.classList.add("letterStyle");
 
                     // songMenu.appendChild(formGroup);
-                    subButton.setAttribute("onclick","searchSong(window.value)");
+                    subButton.addEventListener("click", () => {
+                        searchSong(responseJson);
+                    })
                     formGroup.appendChild(subButton);
                     results.appendChild(formGroup);
                     const songForm = <HTMLFormElement> document.querySelector(".songForm");
                     const controlSelect = <HTMLSelectElement> document.getElementById("controlSelect");
-                    if (controlSelect) {
-                        const selectedIndex = controlSelect.selectedIndex;
-                    }
+                    const selectedIndex = controlSelect.selectedIndex;
                     // SongForm.addEventListener( 'submit' , ( event ) => {
                     //     event.preventDefault();
                     //     var songId = responseJson.tracks.items[selectedIndex].uri;
@@ -113,7 +113,7 @@ function searchSong(responseJson: SearchContent){
             console.log(newsongId);
             let results = <HTMLElement> document.querySelector('.results');
             results.innerHTML = "";
-            results.innerHTML+= `
+            results.innerHTML += `
             <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
         allowtransparency="true" allow="encrypted-media"></iframe>
             `;

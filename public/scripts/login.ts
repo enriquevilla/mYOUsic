@@ -36,6 +36,9 @@ function userLoginFetch(userName: string, password: string) {
 function watchLoginForm(){
     const loginForm = <HTMLFormElement> document.querySelector('.login-form');
 
+    if (!loginForm) {
+        return;
+    }
     loginForm.addEventListener( 'submit' , ( event ) => {
         event.preventDefault();
         const usernameField = <HTMLInputElement> document.querySelector('#userName');

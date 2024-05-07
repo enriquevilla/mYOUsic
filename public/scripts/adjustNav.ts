@@ -14,10 +14,8 @@ if (localStorage.getItem("token")) {
         localStorage.clear();
         window.location.href = "/login";
     });
-    const scriptTag = <HTMLScriptElement> document.querySelector('script[src="./js/adjustNav.js"]') 
-                        || <HTMLScriptElement> document.querySelector('script[src="../js/adjustNav.js"]');
+    const scriptTag = <HTMLScriptElement> document.querySelector('script[src*="adjustNav.js"]');
     scriptTag.before(logOutLi);
-
 
     const myProfileLi = document.createElement("li");
     myProfileLi.classList.add("nav-item");

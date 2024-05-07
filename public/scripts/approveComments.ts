@@ -44,13 +44,6 @@ function addCommentsToApprove(post: IPostModel) {
             `
         }
     }
-    const postEl = <HTMLElement> document.querySelector(`#post${post._id}`);
-    postEl.innerHTML += `
-        <form id="${post._id}">
-            <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
-                aria-label="Comment">
-        </form>
-    `;
 }
 
 function addEventListenerToButtons() {

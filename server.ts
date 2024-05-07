@@ -6,7 +6,7 @@ import jsonwebtoken from "jsonwebtoken";
 import { Headers, RequestInit, HeadersInit, BodyInit } from "node-fetch";
 import fetch from "node-fetch";
 
-import { DBURL, PORT, SECRET_TOKEN, SPOTIFY_KEY } from "#/config";
+import { DBURL, PORT, SECRET_TOKEN, SPOTIFY_KEY, PRODUCTION_MODE } from "#/config";
 import { Users, IUser, IUserModel } from "#/models/user-model";
 import { IPost, Posts } from '#/models/post-model';
 import { Comments } from "#/models/comments-model";
@@ -14,7 +14,9 @@ import { Comments } from "#/models/comments-model";
 const app = express();
 const jsonParser = bodyParser.json();
 
-app.use(express.static("public"));
+const root = PRODUCTION_MODE ? "dist/public" : "public";
+
+app.use(express.static(root));
 
 import { cors } from "#/middleware/cors";
 app.use(cors);
@@ -57,20 +59,18 @@ app.get("/followedUserPosts", (_, res) => {
 });
 
 app.get("/validate-token", (req, res) => {
-    const token = req.headers.sessiontoken;
-    if (token && !Array.isArray(token)) {
-        jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
-            if (err) {
-                res.statusMessage = "Your session expired";
-                return res.status(409).end();
-            } else if (decoded) {
-                const { userName } = decoded as IUser;
-                return res.status(200).json({
-                    userName: userName
-                });
-            }
-        });
-    }
+    const token = <string> req.headers.sessiontoken;
+    jsonwebtoken.verify(token, SECRET_TOKEN, (err, decoded) => {
+        if (err) {
+            res.statusMessage = "Your session expired";
+            return res.status(409).end();
+        } else if (decoded) {
+            const { userName } = decoded as IUser;
+            return res.status(200).json({
+                userName: userName
+            });
+        }
+    });
 });
 
 app.get("/genAccessToken", (req, res) => {
@@ -469,7 +469,7 @@ app.get("/getPostsFromFollowed/:username", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log("Server running on localhost:8080");
+    console.log(`Server running on localhost:${PORT}`);
     new Promise((resolve, reject) => {
         connect(DBURL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, (err) => {
             if (err) {
