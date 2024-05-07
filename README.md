@@ -8,6 +8,7 @@
     * Default connection port is 27017*
     * Default DB name is mYOUsicDB*
 * Node.js
+* Spotify Client ID* & Secret*
 
 #### Build commands
 
