@@ -1,8 +1,6 @@
 if (localStorage.getItem("token")) {
-    const loginActive = document.querySelector(".login-active");
-    if (loginActive) {
-        loginActive.remove();
-    }
+    const loginActive = <HTMLElement> document.querySelector(".login-active");
+    loginActive.remove();
 
     const logOutLi = document.createElement("li");
     logOutLi.classList.add("nav-item");
@@ -16,11 +14,8 @@ if (localStorage.getItem("token")) {
         localStorage.clear();
         window.location.href = "/login";
     });
-    const scriptTag = document.querySelector('script[src="./js/adjustNav.js"]') 
-                        || document.querySelector('script[src="../js/adjustNav.js"]');
-    if (!scriptTag) {
-        throw new Error("Script tag not found");
-    }
+    const scriptTag = <HTMLScriptElement> document.querySelector('script[src="./js/adjustNav.js"]') 
+                        || <HTMLScriptElement> document.querySelector('script[src="../js/adjustNav.js"]');
     scriptTag.before(logOutLi);
 
 
@@ -35,13 +30,11 @@ if (localStorage.getItem("token")) {
     myProfileLi.addEventListener("click", () => {
         window.location.href = "/myProfile";
     });
-    const indexActive = document.querySelector(".index-active");
-    if (indexActive) {
-        indexActive.after(myProfileLi);
-        if (window.location.pathname === "/myProfile") {
-            indexActive.classList.remove("index-active");
-            myProfileLi.classList.add("index-active");
-        }
+    const indexActive = <HTMLElement> document.querySelector(".index-active");
+    indexActive.after(myProfileLi);
+    if (window.location.pathname === "/myProfile") {
+        indexActive.classList.remove("index-active");
+        myProfileLi.classList.add("index-active");
     }
 
     const favoritesLi = document.createElement("li");
@@ -57,9 +50,7 @@ if (localStorage.getItem("token")) {
     });
     myProfileLi.after(favoritesLi);
     if (window.location.pathname === "/favorites") {
-        if (indexActive) {
-            indexActive.classList.remove("index-active");
-        }
+        indexActive.classList.remove("index-active");
         favoritesLi.classList.add("index-active");
     }
 
@@ -76,16 +67,16 @@ if (localStorage.getItem("token")) {
     });
     favoritesLi.after(followingLi);
 
-    if (indexActive && window.location.pathname === "/followedUserPosts") {
+    if (window.location.pathname === "/followedUserPosts") {
         indexActive.classList.remove("index-active");
         followingLi.classList.add("index-active");
     }
 
-    if (indexActive && window.location.pathname === "/approveComments") {
+    if (window.location.pathname === "/approveComments") {
         indexActive.classList.remove("index-active");
     }
 
-    if (indexActive && window.location.pathname === "/createPost") {
+    if (window.location.pathname === "/createPost") {
         indexActive.classList.remove("index-active");
     }
 }

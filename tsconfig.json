@@ -1,13 +1,13 @@
 {
     "extends": "@tsconfig/node20/tsconfig.json",
-    "include": ["./"],
-    "exclude": ["node_modules", "build"],
+    "include": ["./", "./public/scripts/", "./models"],
+    "exclude": ["node_modules", "dist"],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
             "#/*": ["./*"]
         },
-        "outDir": "build",
-        "lib": ["ES2023", "DOM"]
+        "outDir": "dist",
+        "lib": ["ES2023", "DOM"],
     }
 }

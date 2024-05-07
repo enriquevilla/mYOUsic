@@ -27,10 +27,8 @@ function fetchSong(title: string) {
                 })
                 .then((responseJson: SearchContent) => {
                     // window.value = responseJson;
-                    let results = document.querySelector('.results');
-                    if (results) {
-                        results.innerHTML = "";
-                    }
+                    const results = <HTMLElement> document.querySelector('.results');
+                    results.innerHTML = "";
                     // responseJson.tracks.items.forEach(element => {
                     //     document.querySelector(".results").innerHTML += `
                     //         <div>
@@ -76,10 +74,8 @@ function fetchSong(title: string) {
                     // songMenu.appendChild(formGroup);
                     subButton.setAttribute("onclick","searchSong(window.value)");
                     formGroup.appendChild(subButton);
-                    if (results) {
-                        results.appendChild(formGroup);
-                    }
-                    const songForm = document.querySelector(".songForm");
+                    results.appendChild(formGroup);
+                    const songForm = <HTMLFormElement> document.querySelector(".songForm");
                     const controlSelect = <HTMLSelectElement> document.getElementById("controlSelect");
                     if (controlSelect) {
                         const selectedIndex = controlSelect.selectedIndex;
@@ -101,16 +97,13 @@ function fetchSong(title: string) {
                     })
         })
         .catch(err => {
-            const results = document.querySelector('.results');
-            if (results) {
-                results.innerHTML = `<div> ${err.message} </div>`;
-            }
+            const results = <HTMLElement> document.querySelector('.results');
+            results.innerHTML = `<div> ${err.message} </div>`;
         });
-    
 }
 
 function searchSong(responseJson: SearchContent){
-    let SongForm = document.querySelector( '.songForm' );
+    let SongForm = <HTMLFormElement> document.querySelector( '.songForm' );
     const controlSelect = <HTMLSelectElement> document.getElementById("controlSelect");
     if (controlSelect) {
         const selectedIndex = controlSelect.selectedIndex;
@@ -118,42 +111,36 @@ function searchSong(responseJson: SearchContent){
             let songId = responseJson.tracks.items[selectedIndex].uri;
             let newsongId = songId.replace('spotify:track:','');
             console.log(newsongId);
-            let results = document.querySelector('.results');
-            if (results) {
-                results.innerHTML = "";
-                results.innerHTML+= `
-                <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
-            allowtransparency="true" allow="encrypted-media"></iframe>
-                `;
-            }
+            let results = <HTMLElement> document.querySelector('.results');
+            results.innerHTML = "";
+            results.innerHTML+= `
+            <iframe src="https://open.spotify.com/embed/track/${newsongId}" width="300" height="80" frameborder="0"
+        allowtransparency="true" allow="encrypted-media"></iframe>
+            `;
             const descEl = <HTMLInputElement> document.getElementById('Description');
-            if (descEl) {
-                let description = descEl.value;
-                addPostFetch(newsongId, description);
-            }
+            const description = descEl.value;
+            addPostFetch(newsongId, description);
         }
     }
 }
 
 function watchPostForm(){
-    let postForm = document.querySelector('.Post-form');
+    const postForm = <HTMLFormElement> document.querySelector('.Post-form');
 
-    if (postForm) {
-        postForm.addEventListener( 'submit' , ( event ) => {
-            event.preventDefault();
-            const descEl = <HTMLInputElement> document.getElementById('Description');
-            const titleEl = <HTMLInputElement> document.getElementById('Title');
-            const description = descEl.value;
-            const title = titleEl.value;
-            fetchSong(title);
-        })
-    }
+    postForm.addEventListener( 'submit' , ( event ) => {
+        event.preventDefault();
+        const descEl = <HTMLInputElement> document.getElementById('Description');
+        const titleEl = <HTMLInputElement> document.getElementById('Title');
+        const description = descEl.value;
+        const title = titleEl.value;
+        fetchSong(title);
+    });
 }
 
 
 
 
-function addPostFetch(songId: string, description: string){
+function addPostFetch(songId: string, description: string) {
     const data = {
         song : songId,
         description: description,
@@ -168,25 +155,23 @@ function addPostFetch(songId: string, description: string){
         body : JSON.stringify( data )
     }
 
-    const results = document.querySelector('.results');
+    const results = <HTMLElement> document.querySelector('.results');
 
-    if (results) {
-        results.innerHTML = "";
-        fetch( "/posts", settings )
-            .then( response => {
-                if( response.ok ){
-                    return response.json();
-                }
-                throw new Error( response.statusText );
-            })
-            .then( responseJSON => {
-                console.log(responseJSON);
-                window.location.href = "/";
-            })
-            .catch( err => {
-                results.innerHTML = `<div> ${err.message} </div>`;
-            });
-    }
+    results.innerHTML = "";
+    fetch( "/posts", settings )
+        .then( response => {
+            if( response.ok ){
+                return response.json();
+            }
+            throw new Error( response.statusText );
+        })
+        .then( responseJSON => {
+            console.log(responseJSON);
+            window.location.href = "/";
+        })
+        .catch( err => {
+            results.innerHTML = `<div> ${err.message} </div>`;
+        });
 }
 
 function init(){

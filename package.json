@@ -2,10 +2,14 @@
   "name": "mYOUsic",
   "version": "1.0.0",
   "description": "Music sharing social media platform",
-  "main": "build/server.js",
+  "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node build/server.js"
+    "start": "tsc && node build/server.js",
+    "rebuild": "npm install && npm run clean && npm run build",
+    "clean": "npx rimraf dist/",
+    "build": "npm run copy-files && npx tsc",
+    "copy-files": "npx copyfiles -u 1 public/*.html public/css/*.css public/img/* public/pages/*.html dist/public"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.14",
     "node-fetch": "^2.6.0",
-    "nodemon": "^2.0.4"
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
@@ -24,6 +28,8 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node-fetch": "^2.6.11",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^5.0.5",
     "spotify-types": "^1.0.7"
   }
 }

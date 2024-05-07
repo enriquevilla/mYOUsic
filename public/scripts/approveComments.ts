@@ -1,68 +1,61 @@
-import { IPost, IPostModel } from "#/models/post-model";
+import { IPostModel } from "#/models/post-model";
 
 function addPost(post: IPostModel) {
-    const results = document.querySelector(".results");
-    if (results) {
-        results.innerHTML += `
-            <div class="post-result" id="post${post._id}">
-                <h3 class="post-title">
-                    ${post.description}
-                </h3>
-                <iframe src="https://open.spotify.com/embed/track/${post.song}" width="300" height="80" frameborder="0" 
-                    allowtransparency="true" allow="encrypted-media">
-                </iframe>
-                <div class="comments${post._id} comments-to-approve">
-    
-                </div>
+    const results = <HTMLElement> document.querySelector(".results");
+    results.innerHTML += `
+        <div class="post-result" id="post${post._id}">
+            <h3 class="post-title">
+                ${post.description}
+            </h3>
+            <iframe src="https://open.spotify.com/embed/track/${post.song}" width="300" height="80" frameborder="0" 
+                allowtransparency="true" allow="encrypted-media">
+            </iframe>
+            <div class="comments${post._id} comments-to-approve">
+
             </div>
-        `;
-    }
+        </div>
+    `;
 }
 
 function addCommentsToApprove(post: IPostModel) {
-    if (post.comments) {
-        const unapprovedComments = post.comments.filter(i => {
-            return !i.approved;
-        });
-        if (unapprovedComments.length > 0) {
-            const comments = document.querySelector(`.comments${post._id}`);
-            if (comments) {
-                comments.innerHTML += `
-                    <p>
-                        Comments to approve:
-                    </p>
-                `;
-                for (let c of unapprovedComments) {
-                    comments.innerHTML += `
-                        <p class="c${c._id}">
-                            ${c.username}: ${c.comment}
-                            <span>
-                                <button type="button" class="btn btn-primary approve-comment-button">
-                                    Approve
-                                </button>
-                                <button type="button" class="btn btn-danger reject-comment-button">
-                                    Reject
-                                </button>
-                            </span>
-                        </p>
-                    `
-                }
-            }
-        }
-        const postEl = document.querySelector(`#post${post._id}`);
-        if (postEl) {
-            postEl.innerHTML += `
-                <form id="${post._id}">
-                    <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
-                        aria-label="Comment">
-                </form>
-            `;
+    const unapprovedComments = post.comments?.filter(i => {
+        return !i.approved;
+    }) || [];
+    if (unapprovedComments.length > 0) {
+        const comments = <HTMLElement> document.querySelector(`.comments${post._id}`);
+        comments.innerHTML += `
+            <p>
+                Comments to approve:
+            </p>
+        `;
+        for (let c of unapprovedComments) {
+            comments.innerHTML += `
+                <p class="c${c._id}">
+                    ${c.username}: ${c.comment}
+                    <span>
+                        <button type="button" class="btn btn-primary approve-comment-button">
+                            Approve
+                        </button>
+                        <button type="button" class="btn btn-danger reject-comment-button">
+                            Reject
+                        </button>
+                    </span>
+                </p>
+            `
         }
     }
+    const postEl = <HTMLElement> document.querySelector(`#post${post._id}`);
+    postEl.innerHTML += `
+        <form id="${post._id}">
+            <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
+                aria-label="Comment">
+        </form>
+    `;
 }
 
 function addEventListenerToButtons() {
     if (document.querySelectorAll(".comments-to-approve").length > 0) {
+        const results = <HTMLElement> document.querySelector(".results");
         document.querySelectorAll(".comments-to-approve").forEach(i => {
             i.addEventListener("click", (e) => {
                 const target = <HTMLButtonElement> e.target
@@ -82,14 +75,11 @@ function addEventListenerToButtons() {
                             if (response.ok) {
                                 window.location.reload();
                             } else {
-                                const results = document.querySelector(".results");
-                                if (results) {
-                                    results.innerHTML = `
-                                        <div>
-                                            ${response.statusText}
-                                        </div>
-                                    `
-                                }
+                                results.innerHTML = `
+                                    <div>
+                                        ${response.statusText}
+                                    </div>
+                                `
                             }
                         })
                 }
@@ -109,14 +99,11 @@ function addEventListenerToButtons() {
                             if (response.ok) {
                                 window.location.reload();
                             } else {
-                                const results = document.querySelector(".results");
-                                if (results) {
-                                    results.innerHTML = `
-                                        <div>
-                                            ${response.statusText}
-                                        </div>
-                                    `
-                                }
+                                results.innerHTML = `
+                                    <div>
+                                        ${response.statusText}
+                                    </div>
+                                `
                             }
                         })
                 }
@@ -159,10 +146,8 @@ function loadCommentsToApprove() {
             addEventListenerToButtons();
         })
         .catch(err => {
-            const results = document.querySelector(".results");
-            if (results) {
-                results.innerHTML = `<div> ${err.message} </div>`;
-            }
+            const results = <HTMLElement> document.querySelector(".results");
+            results.innerHTML = `<div> ${err.message} </div>`;
         });
 }
 

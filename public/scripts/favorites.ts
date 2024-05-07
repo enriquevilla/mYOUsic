@@ -1,59 +1,51 @@
 import { IPostModel } from "#/models/post-model";
 
 function addPost(post: IPostModel) {
-    const results = document.querySelector(".results");
-    if (results) {
-        results.innerHTML += `
-            <div class="post-result" id="post${post._id}">
-                <h3 class="post-title">
-                    ${post.description}
-                </h3>
-                <iframe src="https://open.spotify.com/embed/track/${post.song}" width="300" height="80" frameborder="0" 
-                    allowtransparency="true" allow="encrypted-media">
-                </iframe>
-                <p class="post-user">
-                    @${post.user.userName}
-                </p>
-                <div class="comments${post._id}">
-    
-                </div>
+    const results = <HTMLElement> document.querySelector(".results");
+    results.innerHTML += `
+        <div class="post-result" id="post${post._id}">
+            <h3 class="post-title">
+                ${post.description}
+            </h3>
+            <iframe src="https://open.spotify.com/embed/track/${post.song}" width="300" height="80" frameborder="0" 
+                allowtransparency="true" allow="encrypted-media">
+            </iframe>
+            <p class="post-user">
+                @${post.user.userName}
+            </p>
+            <div class="comments${post._id}">
+
             </div>
-        `;
-    }
+        </div>
+    `;
 }
 
 function addComments(post: IPostModel) {
-    if (post.comments) {
-        const approvedComments = post.comments.filter(i => {
-            return i.approved;
-        });
-        if (approvedComments.length > 0) {
-            const comments = document.querySelector(`.comments${post._id}`);
-            if (comments) {
-                comments.innerHTML += `
-                    <p>
-                        Comments:
-                    </p>
-                `;
-                for (let c of approvedComments) {
-                    comments.innerHTML += `
-                        <p>
-                            ${c.username}: ${c.comment}
-                        </p>
-                    `
-                }
-            }
-        }
-        const postEl = document.querySelector(`#post${post._id}`);
-        if (postEl) {
-            postEl.innerHTML += `
-                <form id="${post._id}">
-                    <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
-                        aria-label="Comment">
-                </form>
-            `;
+    const approvedComments = post.comments?.filter(i => {
+        return i.approved;
+    }) || [];
+    if (approvedComments.length > 0) {
+    const comments = <HTMLElement> document.querySelector(`.comments${post._id}`);
+        comments.innerHTML += `
+            <p>
+                Comments:
+            </p>
+        `;
+        for (let c of approvedComments) {
+            comments.innerHTML += `
+                <p>
+                    ${c.username}: ${c.comment}
+                </p>
+            `
         }
     }
+    const postEl = <HTMLElement> document.querySelector(`#post${post._id}`);
+    postEl.innerHTML += `
+        <form id="${post._id}">
+            <input type="text" class="form-control post-comment-input" placeholder="Add a comment" 
+                aria-label="Comment">
+        </form>
+    `;
 }
 
 function addDeleteButton(post: IPostModel) {
@@ -65,10 +57,8 @@ function addDeleteButton(post: IPostModel) {
         delButton.classList.add("btn-danger");
         delButton.classList.add("deleteButton");
         delButton.setAttribute("type", "button");
-        const postEl = document.querySelector(`#post${post._id} > form`);
-        if (postEl) {
-            postEl.append(delButton);
-        }
+        const postEl = <HTMLElement> document.querySelector(`#post${post._id} > form`);
+        postEl.append(delButton);
     }
 }
 
@@ -144,17 +134,15 @@ function addCommentEventListener(form: HTMLFormElement) {
                     if (comment.approved) {
                         window.location.reload();
                     } else {
-                        const comments = document.querySelector(`.comments${target.id}`);
-                        if (comments) {
-                            comments.innerHTML += `
-                                <p>
-                                    Your comment is awaiting approval
-                                </p>
-                            `;
-                            setTimeout(() => {
-                                comments.lastElementChild?.remove();
-                            }, 3000);
-                        }
+                        const comments = <HTMLElement> document.querySelector(`.comments${target.id}`);
+                        comments.innerHTML += `
+                            <p>
+                                Your comment is awaiting approval
+                            </p>
+                        `;
+                        setTimeout(() => {
+                            comments.lastElementChild?.remove();
+                        }, 3000);
                     }
                 })
         }
@@ -222,10 +210,8 @@ function loadFavoritePosts() {
             });
         })
         .catch(err => {
-            const results = document.querySelector(".results");
-            if (results) {
-                results.innerHTML = `<div> ${err.message} </div>`;
-            }
+            const results = <HTMLElement> document.querySelector(".results");
+            results.innerHTML = `<div> ${err.message} </div>`;
         })
 }
 
@@ -256,10 +242,8 @@ function checkCommentsToApprove() {
             }
         })
         .catch(err => {
-            const results = document.querySelector(".results");
-            if (results) {
-                results.innerHTML = `<div> ${err.message} </div>`;
-            }
+            const results = <HTMLElement> document.querySelector(".results");
+            results.innerHTML = `<div> ${err.message} </div>`;
         });
 }
 

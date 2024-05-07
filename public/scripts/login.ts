@@ -14,7 +14,7 @@ function userLoginFetch(userName: string, password: string) {
         body : JSON.stringify( data )
     }
 
-    const results = document.querySelector('.results');
+    const results = <HTMLElement> document.querySelector('.results');
 
     fetch( url, settings )
         .then( response => {
@@ -29,26 +29,22 @@ function userLoginFetch(userName: string, password: string) {
             window.location.href="/";
         })
         .catch( err => {
-            if (results) {
-                results.innerHTML = `<div> ${err.message} </div>`;
-            }
+            results.innerHTML = `<div> ${err.message} </div>`;
         });
 }
 
 function watchLoginForm(){
-    const loginForm = document.querySelector('.login-form');
+    const loginForm = <HTMLFormElement> document.querySelector('.login-form');
 
-    if (loginForm) {
-        loginForm.addEventListener( 'submit' , ( event ) => {
-            event.preventDefault();
-            const usernameField = <HTMLInputElement> document.querySelector('#userName');
-            const passwordField = <HTMLInputElement> document.querySelector('#userPassword');
-            const username = usernameField.value;
-            const password = passwordField.value;
-    
-            userLoginFetch(username, password);
-        })
-    }
+    loginForm.addEventListener( 'submit' , ( event ) => {
+        event.preventDefault();
+        const usernameField = <HTMLInputElement> document.querySelector('#userName');
+        const passwordField = <HTMLInputElement> document.querySelector('#userPassword');
+        const username = usernameField.value;
+        const password = passwordField.value;
+
+        userLoginFetch(username, password);
+    });
 }
 
 function init(){
