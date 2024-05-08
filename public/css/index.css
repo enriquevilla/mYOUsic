@@ -65,19 +65,21 @@ nav a {
     color: #1b4079;
 }
 
-.login-title {
+.login-title,
+.register-title {
     margin: 50px 0;
 }
 
-.login-form {
+.login-form,
+.register-form {
     width: 300px;
     margin-left: auto;
     margin-right: auto;
-}
 
-.login-form > button {
-    margin-top: 20px;
-    width: 100%;
+    > button {
+        margin-top: 20px;
+        width: 100%;
+    }
 }
 
 .results {
@@ -85,10 +87,6 @@ nav a {
     margin-top: 30px;
     color: red;
 }
-
-/* body > a {
-    display: none;
-} */
 
 .post-button {
     position: fixed;
@@ -135,6 +133,40 @@ body > a[href='/approveComments'] {
     width: fit-content;
     width: -moz-fit-content;
     border: 1px #56e39f solid;
+    border-radius: 5px;
+
+    .post-title {
+        color: white;
+    }
+
+    .post-user {
+        color: white;
+        margin: 10px 0;
+        text-align: end;
+
+        .follow-button, 
+        .unfollow-button {
+            height: 21px;
+            font-size: 9px;
+            padding: 5px;
+            line-height: 4px;
+            margin-bottom: 3px;
+        }
+    }
+
+    [class^="comments"] {
+        color: #56e39f;
+
+        p {
+            text-align: start;
+        }
+    }
+
+    .favButton,
+    .deleteButton,
+    .post-comment-input {
+        margin-bottom: 16px;
+    }
 }
 
 @media (max-width: 340px) {
@@ -152,29 +184,6 @@ body > a[href='/approveComments'] {
     }
 }
 
-.post-title {
-    color: white;
-}
-
-.post-user {
-    color: white;
-    margin: 10px 0;
-    text-align: start;
-}
-
-.post-comment-input {
-    width: 80%;
-    margin-bottom: 16px;
-}
-
-.favButton {
-    margin-bottom: 16px;
-}
-
-.deleteButton {
-    margin-bottom: 16px;
-}
-
 label[for=Description]
 {
     color: #56e39f;
@@ -188,36 +197,30 @@ label[for=Title]
     font-size: 25px;
 }
 
-.centered{
+.centered {
     text-align: center;
 }
 
-.post-form-class{
+.post-form-class {
     padding-top: 25px;
 }
 
-.greenC{
+.greenC {
     background-color: #56e39f !important;
 }
 
-.create-post{
+.create-post {
     align-content: center;
 }
 
-.results{
+.results {
     max-width: 450px;
     margin: auto;
     padding-top: 30px;
 
 }
 
-.letterStyle{
+.letterStyle {
     color: black !important;
     font-weight: bold !important;
-}
-
-.follow-button, .unfollow-button {
-    height: 24px;
-    font-size: 9px !important;
-    padding: 5px !important;
 }
