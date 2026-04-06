@@ -71,20 +71,78 @@ Auth is JWT stored in `localStorage`. The token is read by `validatetoken.ts` on
 - **Hardcoded `admin` username** — `index.ts` grants delete access to any user named `"admin"`.
 - **Bootstrap 4.5 + jQuery** — outdated; jQuery is only included to satisfy Bootstrap 4.
 
-## Modernization goals (update as we go)
+## Roadmap
 
-Architecture rewrite — the goal is a complete cleanup, not just patching. This was a university project built quickly under time pressure; code quality was deliberately sacrificed. Everything is on the table.
+This was a university project built quickly under time pressure — code quality was deliberately sacrificed. The goal is a complete ground-up modernization, used as a learning exercise. Everything is on the table.
+
+### Phase 1 — Clean up the existing codebase
+
+Fix all known issues before introducing new technology.
 
 - [ ] Split `server.ts` into route modules (users, posts, comments, etc.)
 - [ ] Add auth middleware; protect all mutating routes server-side
+- [ ] Replace hardcoded `"admin"` username check with a proper `role: "user" | "admin"` field on the User model, enforced server-side
+- [ ] Remove comment approval queue — comments post immediately; post owners and admin can delete comments. Remove `approved` field from Comment and the `/approveComments` page
 - [ ] Upgrade Mongoose to v8, remove deprecated connection options
 - [ ] Replace `node-fetch` with native fetch; remove `body-parser`
 - [ ] Fix `getPostsByUserList` query
 - [ ] Enable TypeScript strict mode; eliminate `any`
-- [ ] Separate frontend and backend TypeScript projects/configs
-- [ ] Add a proper frontend build tool (e.g. Vite) instead of the current copy+tsc hack
-- [ ] Add input validation (Zod or express-validator)
-- [ ] Add a test framework (Vitest or Jest)
 - [ ] Move error messages out of `res.statusMessage` into response body
-- [ ] Replace hardcoded `"admin"` username check with a proper `role: "user" | "admin"` field on the User model, enforced server-side
-- [ ] Remove comment approval queue — comments post immediately; post owners and admin can delete comments instead. Remove `approved` field from Comment model and drop the `/approveComments` page.
+- [ ] Remove leftover `console.log` statements
+
+### Phase 2 — Frontend rebuild
+
+Replace the MPA with a proper React SPA.
+
+- [ ] Migrate to React with proper component architecture (Vite as build tool)
+- [ ] TypeScript throughout with strict mode
+- [ ] React Query (TanStack Query) for server state, caching, and data fetching
+- [ ] Responsive design / mobile friendly
+- [ ] Skeleton loading states and proper error boundaries
+- [ ] Zustand for lightweight client-side state (if needed beyond React Query)
+- [ ] Component library — shadcn/ui or a small custom one
+- [ ] Frontend unit tests with React Testing Library
+
+### Phase 3 — Backend rebuild
+
+Rebuild the Express API cleanly on top of the Phase 1 cleanup.
+
+- [ ] Well-structured REST API (`/api/v1/` versioning)
+- [ ] Request validation with Zod
+- [ ] Proper error handling middleware
+- [ ] Refresh token rotation for auth (replace naive JWT-in-localStorage)
+- [ ] CORS configured properly; Helmet.js for HTTP headers
+- [ ] Input sanitization
+- [ ] Database indexing done thoughtfully
+- [ ] Redis for caching Spotify API responses and rate limiting
+- [ ] Rate limiting
+- [ ] API documentation with Swagger/OpenAPI
+- [ ] End-to-end tests with Playwright
+- [ ] Unit and integration tests with Jest
+- [ ] Logging with Winston
+
+### Phase 4 — DevOps & infrastructure
+
+- [ ] Environment configuration management (`.env`, secrets handling)
+- [ ] Containerize with Docker (separate containers for frontend, backend, database)
+- [ ] Docker Compose for local development
+- [ ] CI/CD pipeline with GitHub Actions (auto deploy on push)
+- [ ] HTTPS enforced on deployment
+- [ ] Deploy on AWS (EC2 or ECS)
+- [ ] S3 for media and asset storage
+- [ ] MongoDB Atlas with proper configuration
+- [ ] Nginx as a reverse proxy
+- [ ] Separate dev/staging/production environments
+
+### Phase 5 — Stretch goals
+
+Lower priority; tackle if time and interest allow.
+
+- [ ] Error tracking with Sentry
+- [ ] Health check endpoint
+- [ ] Monitoring dashboard with Grafana + Prometheus
+- [ ] Turborepo for monorepo management
+- [ ] Terraform for AWS infrastructure as code
+- [ ] Kubernetes (basic local cluster with minikube)
+- [ ] GraphQL as alternative/complement to REST
+- [ ] Bun as JavaScript runtime and package manager
