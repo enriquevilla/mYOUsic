@@ -109,6 +109,19 @@ All endpoints return JSON. Error responses set `res.statusMessage` (deprecated â
 2. If the token is invalid/expired, the user is redirected to `/login`.
 3. The nav is adjusted by `adjustNav.ts` to show/hide login-dependent links.
 
+### Target auth design (Phase 3)
+The current approach (single JWT in `localStorage`, 1-hour expiry) has two problems:
+- `localStorage` is accessible to any JavaScript on the page, making the token vulnerable to XSS attacks.
+- When the token expires, the user is simply logged out with no way to silently renew the session.
+
+Target: **short-lived access token + refresh token rotation.**
+- Access token (e.g. 15 min) stored in memory (React state), never persisted.
+- Refresh token (long-lived) stored in an `httpOnly` cookie â€” inaccessible to JavaScript.
+- On access token expiry, the client silently hits a `/auth/refresh` endpoint; the server validates the refresh token cookie and issues a new pair.
+- On logout, the refresh token is invalidated server-side.
+
+This requires a server-side refresh token store (Redis is the natural fit, already planned).
+
 ### Comment moderation
 **Current (to be replaced):** Comments require approval before appearing. Post owners approve/reject comments on their own posts via a dedicated page. Auto-approved if the commenter is the post owner.
 
