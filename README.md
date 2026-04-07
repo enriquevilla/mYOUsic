@@ -10,6 +10,10 @@
 * Node.js
 * Spotify Client ID* & Secret*
 
+#### Setup
+
+1. Copy `config.example.ts` to `config.ts` and fill in your credentials
+
 #### Build commands
 
 1. `npm install`
