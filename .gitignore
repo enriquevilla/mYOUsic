@@ -2,3 +2,15 @@ node_modules
 package-lock.json
 config.ts
 dist
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
