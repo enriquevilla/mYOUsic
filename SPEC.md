@@ -144,16 +144,44 @@ Both currently rely on a hardcoded `"admin"` username check (client-side only). 
 
 ---
 
-## Known bugs
+## Known issues
 
-1. **`/getPostsFromFollowed/:username`** — `Posts.getPostsByUserList` uses `populate` with a `match` filter which does not restrict the DB query; it fetches all posts and nulls out non-matching user fields, then returns them all including posts with `user: null`. Fix: use `find({ user: { $in: userList } })`.
+### Security vulnerabilities
+
+1. **`innerHTML` with user-provided content** — every feed view builds UI by concatenating user data (usernames, post descriptions, comment text) directly into `innerHTML`. This is a stored XSS vector: a malicious username or comment can execute arbitrary JavaScript in every other user's browser. Fixed implicitly when the frontend moves to React (which escapes values by default), but a real vulnerability in the current build.
 
 2. **No server-side authorization** — all mutating endpoints accept a username in the body and trust it blindly. Any client can delete any post, approve any comment, or follow/unfollow anyone by passing an arbitrary username.
 
-3. **JWT token logged to stdout** — `server.ts:120` calls `console.log(token)` after every successful login.
+3. **Admin role is username-only and client-side** — any user named `"admin"` gets elevated UI privileges. There is no `role` field on the User model and no server-side enforcement.
 
-4. **`PRODUCTION_MODE` default is `true`** — means `npm start` after a fresh `npm install` (without building) will serve from a non-existent `dist/public`. Should default to `false`.
+4. **JWT stored in `localStorage`** — accessible to any JavaScript on the page; vulnerable to XSS. See target auth design above.
 
-5. **`getFavoritesByUsername` double-populates** — two chained `.populate()` calls on the same `favorites` path; only the last one takes effect (comments are populated, user is not).
+5. **JWT token logged to stdout** — `server.ts:120` calls `console.log(token)` after every successful login.
 
-6. **Admin role is username-only and client-side** — any user named `"admin"` gets elevated UI privileges. There is no `role` field on the User model and no server-side enforcement. There are also commented-out experiments in `createPost.ts` and `validatetoken.ts` suggesting page-access restrictions for admin were explored but not implemented.
+### Bugs
+
+6. **`/getPostsFromFollowed/:username`** — `Posts.getPostsByUserList` uses `populate` with a `match` filter which does not restrict the DB query; it fetches all posts and nulls out non-matching user fields, returning all posts including those with `user: null`. Fix: use `find({ user: { $in: userList } })`.
+
+7. **`getFavoritesByUsername` double-populates** — two chained `.populate()` calls on the same `favorites` path; only the last one takes effect (comments are populated, user is not).
+
+### Tech debt
+
+8. **Mongoose v5** — deprecated; uses dead connection options (`useNewUrlParser`, `useUnifiedTopology`, `useCreateIndex`).
+
+9. **`node-fetch` v2** — Node 18+ has native `fetch`; this dependency should be removed.
+
+10. **`body-parser` separate** — redundant since `express.json()` is available since Express 4.16.
+
+11. **`res.statusMessage`** — deprecated in Node 18+; error messages should be in the response body.
+
+12. **`any` everywhere** — TypeScript strict mode is off; many model methods and handlers use `any`.
+
+13. **No input sanitization** — no validation library; fields are passed directly to Mongoose.
+
+14. **`exports = {}` hack in HTML** — workaround for a CommonJS/browser compat issue in the compiled scripts.
+
+15. **`PRODUCTION_MODE` defaults to `true`** — `npm start` after a fresh `npm install` (without building) serves from a non-existent `dist/public`. Should default to `false`.
+
+16. **Bootstrap 4.5 + jQuery** — outdated; jQuery is only present to satisfy Bootstrap 4.
+
+17. **No tests** — `npm test` exits with an error. No test framework is configured.

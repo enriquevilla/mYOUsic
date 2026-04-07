@@ -55,22 +55,6 @@ The frontend TypeScript files import server-side model interfaces (e.g. `import 
 
 Auth is JWT stored in `localStorage`. The token is read by `validatetoken.ts` on each page load. **Most API routes are not protected server-side** — any request can call `/posts`, `/deleteOwnPosts`, etc. without a valid token.
 
-## Known issues & tech debt (modernization targets)
-
-- **Mongoose v5** — deprecated, uses dead options (`useNewUrlParser`, `useUnifiedTopology`, `useCreateIndex`). Target: Mongoose v8.
-- **No auth middleware** — protected routes (create post, delete post, add comment, follow, favorite) do not verify the JWT on the server.
-- **`node-fetch` v2** — Node 18+ has native `fetch`; this dependency should be removed.
-- **`body-parser` separate** — `express.json()` is available since Express 4.16; the `body-parser` dep is redundant.
-- **`getPostsByUserList` is broken** — uses `populate` with `match` which does NOT filter documents at the DB level; it returns all posts and nulls out non-matching users. The query needs `find({ user: { $in: userList } })`.
-- **No tests** — `npm test` exits with an error. No test framework is set up.
-- **Leftover `console.log`** — JWT tokens, post data, and user IDs are logged to stdout in production paths.
-- **`res.statusMessage`** — deprecated in Node 18+; error messages should be in the response body.
-- **`any` everywhere** — TypeScript strict mode is not enabled; many model methods and handlers use `any`.
-- **No input sanitization** — no validation library; fields are passed directly to Mongoose.
-- **`exports = {}` hack in HTML** — workaround for CommonJS/browser compat issue in the compiled scripts.
-- **Hardcoded `admin` username** — `index.ts` grants delete access to any user named `"admin"`.
-- **Bootstrap 4.5 + jQuery** — outdated; jQuery is only included to satisfy Bootstrap 4.
-
 ## Roadmap
 
 This was a university project built quickly under time pressure — code quality was deliberately sacrificed. The goal is a complete ground-up modernization, used as a learning exercise. Everything is on the table.
