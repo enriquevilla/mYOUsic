@@ -12,7 +12,7 @@
 
 #### Setup
 
-1. Copy `config.example.ts` to `config.ts` and fill in your credentials
+1. Copy `.env.example` to `.env` and fill in your credentials
 
 #### Build commands
 
