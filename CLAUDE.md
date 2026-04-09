@@ -130,3 +130,4 @@ Lower priority; tackle if time and interest allow.
 - [ ] Kubernetes (basic local cluster with minikube)
 - [ ] GraphQL as alternative/complement to REST
 - [ ] Bun as JavaScript runtime and package manager
+- [ ] Spotify account linking (OAuth Authorization Code flow) — enables Web Playback SDK for Premium users, replacing the embed iframe with a full in-browser player
