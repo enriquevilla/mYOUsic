@@ -57,6 +57,8 @@ Auth is JWT stored in `localStorage`. The token is read by `validatetoken.ts` on
 
 ## Roadmap
 
+> **Workflow:** When completing a roadmap item, mark it `[x]` in the same PR that does the work — don't leave it for a follow-up commit.
+
 This was a university project built quickly under time pressure — code quality was deliberately sacrificed. The goal is a complete ground-up modernization, used as a learning exercise. Everything is on the table.
 
 ### Phase 1 — Clean up the existing codebase
@@ -67,12 +69,12 @@ Fix all known issues before introducing new technology.
 - [ ] Add auth middleware; protect all mutating routes server-side
 - [ ] Replace hardcoded `"admin"` username check with a proper `role: "user" | "admin"` field on the User model, enforced server-side
 - [ ] Remove comment approval queue — comments post immediately; post owners and admin can delete comments. Remove `approved` field from Comment and the `/approveComments` page
-- [ ] Upgrade Mongoose to v8, remove deprecated connection options
-- [ ] Replace `node-fetch` with native fetch; remove `body-parser`
+- [x] Upgrade Mongoose to v8, remove deprecated connection options
+- [x] Replace `node-fetch` with native fetch; remove `body-parser`
 - [ ] Fix `getPostsByUserList` query
 - [ ] Enable TypeScript strict mode; eliminate `any`
 - [ ] Move error messages out of `res.statusMessage` into response body
-- [ ] Remove leftover `console.log` statements
+- [x] Remove leftover `console.log` statements
 
 ### Phase 2 — Frontend rebuild
 
